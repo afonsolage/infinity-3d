@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.2.71'
+    ext.kotlinVersion = '1.3.11'
 
     repositories {
         mavenLocal()
@@ -63,9 +63,21 @@ project(":core") {
 
 
     dependencies {
+        compile project(":logic")
+    }
+}
+
+project(":logic") {
+    apply plugin: "kotlin"
+
+
+    dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        testCompile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
     }
 }
 

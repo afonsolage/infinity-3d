@@ -7,4 +7,5 @@ import com.lagecompany.InfinityGame
 fun main (args: Array<String>) {
     val config = LwjglApplicationConfiguration()
     LwjglApplication(InfinityGame(), config)
+
 }
