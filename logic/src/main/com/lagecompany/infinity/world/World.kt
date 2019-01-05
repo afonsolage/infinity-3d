@@ -1,6 +1,11 @@
 package com.lagecompany.infinity.world
 
-class World {
+import com.badlogic.gdx.math.Vector
+import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.utils.Disposable
+import com.lagecompany.infinity.math.Vector3I
+
+class World : Disposable {
     private val chunks = Array(SIZE) { Chunk() }
     var x: Int = 0
     var y: Int = 0
@@ -8,8 +13,8 @@ class World {
 
     companion object {
         const val WIDTH = 4
-        const val HEIGHT = 1
-        const val DEPTH = 4
+        const val HEIGHT = 2
+        const val DEPTH = 3
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -20,16 +25,25 @@ class World {
         const val Y_UNIT = Z_SIZE * Z_UNIT
         const val X_UNIT = Y_SIZE * Y_UNIT
 
+        fun toIndex(vec: Vector3I): Int {
+            return toIndex(vec.x, vec.y, vec.z)
+        }
+
         fun toIndex(x: Int, y: Int, z: Int): Int {
             return x * X_UNIT + y * Y_UNIT + z * Z_UNIT
+        }
+
+        fun fromIndex(index: Int): Vector3I {
+            return Vector3I(index / X_UNIT, (index % X_UNIT) / Y_UNIT, index % Y_UNIT)
         }
     }
 
     fun generateAllChunks() {
-        chunks.forEach(this::generateChunk)
+        chunks.forEachIndexed(this::generateChunk)
     }
 
-    private fun generateChunk(chunk: Chunk) {
+    private fun generateChunk(index: Int, chunk: Chunk) {
+
         chunk.types.alloc()
 
         val generator = NoiseGenerator.default
@@ -46,5 +60,9 @@ class World {
                 }
             }
         }
+    }
+
+    override fun dispose() {
+        chunks.forEach { it.dispose() }
     }
 }
