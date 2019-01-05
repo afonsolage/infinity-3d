@@ -2,7 +2,7 @@ package com.lagecompany.infinity.world
 
 import com.lagecompany.infinity.math.SimplexNoise
 
-class Layer(val freq: Float, val weight: Float, val elevations: Array<FloatArray> = Array(ChunkBuffer.SIZE) { FloatArray(ChunkBuffer.SIZE) })
+class Layer(val freq: Float, val weight: Float, val elevations: Array<FloatArray> = Array(Chunk.SIZE) { FloatArray(Chunk.SIZE) })
 
 class NoiseGenerator(vararg noiseLayers: Layer) {
     private val layers = arrayOf(*noiseLayers)
@@ -13,7 +13,7 @@ class NoiseGenerator(vararg noiseLayers: Layer) {
 
     fun generate(chunk: Chunk) {
         layers.forEach {
-            SimplexNoise.generateSimplexNoise(chunk.x, chunk.y, ChunkBuffer.SIZE, ChunkBuffer.SIZE, it.freq, it.elevations)
+            SimplexNoise.generateSimplexNoise(chunk.x, chunk.y, Chunk.SIZE, Chunk.SIZE, it.freq, it.elevations)
         }
     }
 

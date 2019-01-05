@@ -45,11 +45,11 @@ class World : Disposable {
         val generator = NoiseGenerator.default
         generator.generate(chunk)
 
-        for (x in 0 until ChunkBuffer.SIZE) {
-            for (z in 0 until ChunkBuffer.SIZE) {
+        for (x in 0 until Chunk.SIZE) {
+            for (z in 0 until Chunk.SIZE) {
                 val height = generator.get(x, z).toInt()
 
-                if (height >= ChunkBuffer.SIZE) continue
+                if (height >= Chunk.SIZE) continue
 
                 for (y in 0..height) {
                     chunk.types[x, y, z].set(VoxelType.Grass).save()
@@ -60,9 +60,9 @@ class World : Disposable {
 
     private fun setChunkPosition(index: Int, chunk: Chunk) {
         val vec = fromIndex(index)
-        chunk.x = vec.x * ChunkBuffer.SIZE
-        chunk.y = vec.y * ChunkBuffer.SIZE
-        chunk.z = vec.z * ChunkBuffer.SIZE
+        chunk.x = vec.x * Chunk.SIZE
+        chunk.y = vec.y * Chunk.SIZE
+        chunk.z = vec.z * Chunk.SIZE
     }
 
     override fun dispose() {

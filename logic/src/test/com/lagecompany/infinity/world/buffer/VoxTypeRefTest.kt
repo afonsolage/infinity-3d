@@ -1,5 +1,7 @@
-package com.lagecompany.infinity.world
+package com.lagecompany.infinity.world.buffer
 
+import com.lagecompany.infinity.world.Chunk
+import com.lagecompany.infinity.world.VoxelType
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -7,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class VoxTypeRefTest {
 
-    private val buffer = ChunkBuffer()
+    private val buffer = VoxelTypeBuffer()
 
     @BeforeEach
     fun setUp() {
@@ -52,25 +54,25 @@ internal class VoxTypeRefTest {
     @Test
     fun get() {
         Assertions.assertThrows(AssertionError::class.java) { buffer[-1] }
-        Assertions.assertThrows(AssertionError::class.java) { buffer[ChunkBuffer.BUFFER_SIZE] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[Chunk.BUFFER_SIZE] }
         Assertions.assertThrows(AssertionError::class.java) { buffer[-1, 0, 0] }
-        Assertions.assertThrows(AssertionError::class.java) { buffer[ChunkBuffer.SIZE, 0, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[Chunk.SIZE, 0, 0] }
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, -1, 0] }
-        Assertions.assertThrows(AssertionError::class.java) { buffer[0, ChunkBuffer.SIZE, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, Chunk.SIZE, 0] }
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, -1] }
-        Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, ChunkBuffer.SIZE] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, Chunk.SIZE] }
 
         buffer[0, 0, 10].set(VoxelType.Grass).save()
         Assertions.assertEquals(buffer[10].get(), VoxelType.Grass)
 
-        buffer[0, 0, ChunkBuffer.SIZE - 1].set(VoxelType.Rock).save()
-        Assertions.assertEquals(buffer[ChunkBuffer.SIZE - 1].get(), VoxelType.Rock)
+        buffer[0, 0, Chunk.SIZE - 1].set(VoxelType.Rock).save()
+        Assertions.assertEquals(buffer[Chunk.SIZE - 1].get(), VoxelType.Rock)
 
         buffer[0, 1, 0].set(VoxelType.Dirt).save()
-        Assertions.assertEquals(buffer[ChunkBuffer.SIZE].get(), VoxelType.Dirt)
+        Assertions.assertEquals(buffer[Chunk.SIZE].get(), VoxelType.Dirt)
 
         buffer[1, 0, 0].set(VoxelType.Grass).save()
-        Assertions.assertEquals(buffer[ChunkBuffer.SIZE * ChunkBuffer.SIZE].get(), VoxelType.Grass)
+        Assertions.assertEquals(buffer[Chunk.SIZE * Chunk.SIZE].get(), VoxelType.Grass)
     }
 
     @Test
