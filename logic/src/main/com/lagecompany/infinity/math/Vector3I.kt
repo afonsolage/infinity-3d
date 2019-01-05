@@ -82,13 +82,6 @@ class MutVector3I(override var x: Int, override var y: Int, override var z: Int)
         return set(this.x - x, this.y - y, this.z - z)
     }
 
-    fun nor(): MutVector3I {
-        val max = Math.max(Math.abs(x), Math.max(Math.abs(y), Math.abs(z)))
-        if (max == 0)
-            return this
-        return set(x / max, y / max, z / max)
-    }
-
     override fun cpy(): MutVector3I {
         return MutVector3I(this)
     }

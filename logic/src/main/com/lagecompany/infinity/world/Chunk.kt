@@ -7,6 +7,7 @@ class Chunk : Disposable {
 
     var x: Int = 0
     var y: Int = 0
+    var z: Int = 0
 
     override fun dispose() {
         types.free()

@@ -45,11 +45,13 @@ internal class WorldTest {
             }
         }
 
-        Assertions.assertEquals(Vector3I(0, 0, 1), World.fromIndex(World.Z_UNIT))
-        Assertions.assertEquals(Vector3I.Zero, World.fromIndex(0))
-        Assertions.assertEquals(Vector3I(0, 1, 0), World.fromIndex(World.Y_UNIT))
-        Assertions.assertEquals(Vector3I(1, 0, 0), World.fromIndex(World.X_UNIT))
-        Assertions.assertEquals(Vector3I(1, 0, 1), World.fromIndex(World.X_UNIT + World.Z_UNIT))
+        if (World.WIDTH > 1 && World.HEIGHT > 1 && World.DEPTH > 1) {
+            Assertions.assertEquals(Vector3I(0, 0, 1), World.fromIndex(World.Z_UNIT))
+            Assertions.assertEquals(Vector3I.Zero, World.fromIndex(0))
+            Assertions.assertEquals(Vector3I(0, 1, 0), World.fromIndex(World.Y_UNIT))
+            Assertions.assertEquals(Vector3I(1, 0, 0), World.fromIndex(World.X_UNIT))
+            Assertions.assertEquals(Vector3I(1, 0, 1), World.fromIndex(World.X_UNIT + World.Z_UNIT))
+        }
     }
 
     @Test

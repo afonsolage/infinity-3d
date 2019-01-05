@@ -1,7 +1,5 @@
 package com.lagecompany.infinity.world
 
-import com.badlogic.gdx.math.Vector
-import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
 
@@ -12,9 +10,9 @@ class World : Disposable {
 
 
     companion object {
-        const val WIDTH = 4
+        const val WIDTH = 2
         const val HEIGHT = 2
-        const val DEPTH = 3
+        const val DEPTH = 2
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -43,23 +41,31 @@ class World : Disposable {
     }
 
     private fun generateChunk(index: Int, chunk: Chunk) {
+        setChunkPosition(index, chunk)
 
         chunk.types.alloc()
 
         val generator = NoiseGenerator.default
         generator.generate(chunk)
 
-        for(x in 0 until ChunkBuffer.SIZE) {
-            for(z in 0 until ChunkBuffer.SIZE) {
+        for (x in 0 until ChunkBuffer.SIZE) {
+            for (z in 0 until ChunkBuffer.SIZE) {
                 val height = generator.get(x, z).toInt()
 
                 if (height >= ChunkBuffer.SIZE) continue
 
-                for(y in 0..height) {
+                for (y in 0..height) {
                     chunk.types[x, y, z].set(VoxelType.Grass).save()
                 }
             }
         }
+    }
+
+    private fun setChunkPosition(index: Int, chunk: Chunk) {
+        val vec = fromIndex(index)
+        chunk.x = vec.x * ChunkBuffer.SIZE
+        chunk.y = vec.y * ChunkBuffer.SIZE
+        chunk.z = vec.z * ChunkBuffer.SIZE
     }
 
     override fun dispose() {

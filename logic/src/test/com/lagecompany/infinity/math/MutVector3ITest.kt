@@ -150,14 +150,6 @@ internal class MutVector3ITest {
     }
 
     @Test
-    fun nor() {
-        repeat(10) {
-            val rnd = rnd().nor()
-            Assertions.assertTrue(rnd.isUnit || rnd.isZero) {"$rnd isn't normalized"}
-        }
-    }
-
-    @Test
     fun inv() {
         repeat(10) {
             val rnd = rnd()
