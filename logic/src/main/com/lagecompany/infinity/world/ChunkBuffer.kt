@@ -69,6 +69,8 @@ class ChunkBuffer {
 
     private var buffer = emptyBuffer
 
+    val isEmpty get () = buffer.isEmpty()
+
     fun alloc() {
         assert(buffer === emptyBuffer)
         buffer = ByteArray(BUFFER_SIZE)

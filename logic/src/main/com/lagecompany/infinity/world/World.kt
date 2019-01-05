@@ -4,15 +4,12 @@ import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
 
 class World : Disposable {
-    private val chunks = Array(SIZE) { Chunk() }
-    var x: Int = 0
-    var y: Int = 0
-
+    private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 2
-        const val HEIGHT = 2
-        const val DEPTH = 2
+        const val WIDTH = 1
+        const val HEIGHT = 1
+        const val DEPTH = 1
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -71,4 +68,16 @@ class World : Disposable {
     override fun dispose() {
         chunks.forEach { it.dispose() }
     }
+
+    operator fun get(index: Int): Chunk {
+        assert(index in 0 until World.SIZE)
+        return chunks[index]
+    }
+    operator fun get(x: Int, y: Int, z: Int): Chunk {
+        assert(x in 0 until World.X_SIZE)
+        assert(y in 0 until World.Y_SIZE)
+        assert(z in 0 until World.Z_SIZE)
+        return chunks[toIndex(x, y, z)]
+    }
+
 }

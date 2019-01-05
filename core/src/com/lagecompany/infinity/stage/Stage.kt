@@ -9,6 +9,10 @@ interface StageComponent : Disposable {
     fun initialize()
     fun tick(delta: Float)
     fun render()
+
+    fun <T> currentStage(): T {
+        return StageManager.currentStage as T ?: throw ClassCastException()
+    }
 }
 
 abstract class Stage : Disposable {
@@ -38,7 +42,7 @@ abstract class Stage : Disposable {
      * Renders it self and all it's children. If this method is overridden, it must call super.render() in order to render
      * any children or render all children manually
      */
-    fun render() {
+    open fun render() {
         renderables.forEach { it.render() }
     }
 
