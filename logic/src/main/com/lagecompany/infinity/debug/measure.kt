@@ -8,9 +8,9 @@ import java.util.*
  * Performs warming by iterating [ITERATIONS]x[WARM_COUNT] times.
  */
 fun simpleMeasureTest(
-        ITERATIONS: Int = 1000,
-        TEST_COUNT: Int = 10,
-        WARM_COUNT: Int = 2,
+        ITERATIONS: Int = 1,
+        TEST_COUNT: Int = 40,
+        WARM_COUNT: Int = 4,
         prepare: () -> Unit = {},
         dispose: () -> Unit = {},
         callback: () -> Unit
@@ -24,13 +24,13 @@ fun simpleMeasureTest(
 
     while (++t <= TEST_COUNT + WARM_COUNT) {
 
-        var accumTime = 0L
+        var acctTime = 0L
         var i = 0
         while (i++ < ITERATIONS) {
             prepare()
             val startTime = System.currentTimeMillis()
             callback()
-            accumTime += System.currentTimeMillis() - startTime
+            acctTime += System.currentTimeMillis() - startTime
             dispose()
         }
 
@@ -39,18 +39,20 @@ fun simpleMeasureTest(
             continue
         }
 
-        println(PRINT_REFIX + " " + accumTime.toString() + "ms")
+        println(PRINT_REFIX + " " + acctTime.toString() + "ms")
 
-        results.add(accumTime)
-        totalTime += accumTime
+        results.add(acctTime)
+        totalTime += acctTime
     }
 
     results.sort()
 
     val average = totalTime / TEST_COUNT
     val median = results[results.size / 2]
+    val max = results.last()
+    val min = results.first()
 
-    println("$PRINT_REFIX -> average=${average}ms / median=${median}ms")
+    println("$PRINT_REFIX -> average=${average}ms / median=${median}ms / max=${max}ms / min=${min}ms / delta=${max - min}ms")
 }
 
 /**

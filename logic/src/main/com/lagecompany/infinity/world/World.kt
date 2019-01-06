@@ -13,9 +13,9 @@ class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 1
-        const val HEIGHT = 1
-        const val DEPTH = 1
+        const val WIDTH = 16
+        const val HEIGHT = 16
+        const val DEPTH = 16
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -48,6 +48,39 @@ class World : Disposable {
                     }
                     async {
                         buildChunkNeighborhood(it)
+                    }
+                }
+            }
+        }
+        coroutineScope {
+            chunks.forEach {
+                launch(Dispatchers.Default) {
+                    checkVisibility(it)
+                }
+            }
+        }
+    }
+
+    internal suspend fun checkVisibility(chunk: Chunk) {
+        if (chunk.isEmpty)
+            return
+
+        coroutineScope {
+            for (x in 0 until Chunk.SIZE) {
+                launch(Dispatchers.Default) {
+                    for (y in 0 until Chunk.SIZE) {
+                        for (z in 0 until Chunk.SIZE) {
+                            if (chunk.types[x, y, z].get() != VoxelType.None) {
+                                val visibleRef = chunk.visibleSides[x, y, z]
+                                val neighborhoodRef = chunk.neighborSides[x, y, z]
+
+                                for (side in Side.allSides) {
+                                    visibleRef[side] = neighborhoodRef[side].get()?.isNotVisible ?: true
+                                }
+
+                                visibleRef.save()
+                            }
+                        }
                     }
                 }
             }

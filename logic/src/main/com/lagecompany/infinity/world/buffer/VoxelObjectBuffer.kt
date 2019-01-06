@@ -62,7 +62,7 @@ abstract class VoxelObjectBuffer<T : Any> {
 
     fun alloc() {
         assert(buffer === emptyBuffer)
-        buffer = Array(Chunk.BUFFER_SIZE) { instanciateObject() }
+        buffer = Array(Chunk.BUFFER_SIZE) {}
     }
 
     fun free() {
@@ -74,7 +74,14 @@ abstract class VoxelObjectBuffer<T : Any> {
         assert(index in 0 until Chunk.BUFFER_SIZE) { "Failed to getValue: Invalid index" }
         assert(buffer.isNotEmpty()) { "Failed to getValue:  Buffer isn't allocated" }
 
-        return buffer[index] as T
+        val v = buffer[index]
+
+        return if (v is Unit) {
+            buffer[index] = instanciateObject()
+            buffer[index] as T
+        } else {
+            v as T
+        }
     }
 
     internal fun getValue(x: Int, y: Int, z: Int): T {

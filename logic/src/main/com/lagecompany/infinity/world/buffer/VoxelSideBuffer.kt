@@ -33,6 +33,7 @@ class VoxSideRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxSideRef>(b
     }
 
     val isVisible get() = value > 0
+    val isNotVisible get() = !isVisible
 }
 
 class WeakVoxSideRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxSideRef>(buffer, index) {
