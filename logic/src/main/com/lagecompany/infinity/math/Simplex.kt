@@ -114,19 +114,21 @@ object SimplexNoise {  // Simplex noise in 2D
     // (array access is a lot slower than member access)
     private class Grad internal constructor(internal var x: Double, internal var y: Double)
 
-    fun generateSimplexNoise(startX: Int, startY: Int, width: Int, height: Int, frequency: Float, storage: Array<FloatArray>) {
-        var i = 0
+    fun generateSimplexNoise(x: Int, y: Int, frequency: Float): Float {
+        return (noise((x * frequency).toDouble(), (y * frequency).toDouble()).toFloat() + 1) / 2f
+    }
+
+    fun generateSimplexNoise(startX: Int, startY: Int, width: Int, height: Int, frequency: Float, storage: FloatArray) {
+        var index = 0
         var x = startX
         while (x < startX + width) {
-            var j = 0
             var y = startY
             while (y < startY + height) {
-                storage[i][j] = noise((x * frequency).toDouble(), (y * frequency).toDouble()).toFloat()
-                storage[i][j] = (storage[i][j] + 1) / 2   //generate values between 0 and 1
-                j++
+                storage[index] = noise((x * frequency).toDouble(), (y * frequency).toDouble()).toFloat()
+                storage[index] = (storage[index] + 1) / 2   //generate values between 0 and 1
+                index++
                 y++
             }
-            i++
             x++
         }
     }

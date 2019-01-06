@@ -9,8 +9,8 @@ import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.world.Chunk
 import com.lagecompany.infinity.world.buffer.VoxelBuffer
 
-const val MAX_VERTICES = 8 * VoxelBuffer.BUFFER_SIZE // 3 float per 3 vertices per 8 vertices per chunk
-const val MAX_INDICES = 3 * 2 * 6 * VoxelBuffer.BUFFER_SIZE // 3 indices per triangle, 2 triangle per side, 6 sides
+const val MAX_VERTICES = 8 * Chunk.BUFFER_SIZE // 3 float per 3 vertices per 8 vertices per chunk
+const val MAX_INDICES = 3 * 2 * 6 * Chunk.BUFFER_SIZE // 3 indices per triangle, 2 triangle per side, 6 sides
 
 class ChunkRenderer(private val chunk: Chunk) : Disposable {
 
@@ -25,9 +25,9 @@ class ChunkRenderer(private val chunk: Chunk) : Disposable {
         var k = 0
         var l: Short = 0
 
-        for (x in 0 until VoxelBuffer.SIZE) {
-            for (y in 0 until VoxelBuffer.SIZE) {
-                for (z in 0 until VoxelBuffer.SIZE) {
+        for (x in 0 until Chunk.SIZE) {
+            for (y in 0 until Chunk.SIZE) {
+                for (z in 0 until Chunk.SIZE) {
                     val cube = Cube((x + chunk.x).toFloat(), (y + chunk.y).toFloat(), (z + chunk.z).toFloat())
                     cube.v0.append(vertices, i)
                     i += 3

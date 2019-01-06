@@ -24,5 +24,6 @@ class Chunk(val index: Int) : Disposable {
 
     override fun dispose() {
         types.free()
+        visible.free()
     }
 }

@@ -2,14 +2,17 @@ package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 1
-        const val HEIGHT = 1
-        const val DEPTH = 1
+        const val WIDTH = 5
+        const val HEIGHT = 5
+        const val DEPTH = 5
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -33,8 +36,24 @@ class World : Disposable {
         }
     }
 
-    fun generateAllChunks() {
-        chunks.forEachIndexed(this::generateChunk)
+    suspend fun generateAllChunks() = coroutineScope {
+        chunks.forEachIndexed { idx, chunk ->
+            launch(Dispatchers.Default) {
+                generateChunk(idx, chunk)
+            }
+        }
+    }
+
+    suspend fun generateAllChunksSequence() = coroutineScope {
+        chunks.forEachIndexed { idx, chunk ->
+            launch(Dispatchers.Default) {
+                generateChunkSequence(idx, chunk)
+            }
+        }
+    }
+
+    fun clearAllChunks() {
+        chunks.forEach(Chunk::dispose)
     }
 
     private fun generateChunk(index: Int, chunk: Chunk) {
@@ -42,16 +61,34 @@ class World : Disposable {
 
         chunk.types.alloc()
 
+
         val generator = NoiseGenerator.default
         generator.generate(chunk)
 
-        for (x in 0 until Chunk.SIZE) {
-            for (z in 0 until Chunk.SIZE) {
-                val height = generator.get(x, z).toInt()
+        for (i in 0 until Chunk.SIZE * Chunk.SIZE) {
+            val height = generator[i]
 
-                if (height >= Chunk.SIZE) continue
+            if (height >= Chunk.SIZE) continue
 
-                for (y in 0..height) {
+            val (x, z) = NoiseGenerator.fromIndex(i)
+            for (y in 0..height.toInt()) {
+                chunk.types[x, y, z].set(VoxelType.Grass).save()
+            }
+        }
+    }
+
+
+    private suspend fun generateChunkSequence(index: Int, chunk: Chunk) {
+        setChunkPosition(index, chunk)
+
+        chunk.types.alloc()
+        val generator = NoiseGenerator.default.generateSequence(chunk)
+
+        var i = 0
+        for (height in generator) {
+            if (height < Chunk.SIZE) {
+                val (x, z) = NoiseGenerator.fromIndex(i++)
+                for (y in 0..height.toInt()) {
                     chunk.types[x, y, z].set(VoxelType.Grass).save()
                 }
             }
@@ -59,6 +96,7 @@ class World : Disposable {
     }
 
     private fun setChunkPosition(index: Int, chunk: Chunk) {
+
         val vec = fromIndex(index)
         chunk.x = vec.x * Chunk.SIZE
         chunk.y = vec.y * Chunk.SIZE
@@ -73,11 +111,11 @@ class World : Disposable {
         assert(index in 0 until World.SIZE)
         return chunks[index]
     }
+
     operator fun get(x: Int, y: Int, z: Int): Chunk {
         assert(x in 0 until World.X_SIZE)
         assert(y in 0 until World.Y_SIZE)
         assert(z in 0 until World.Z_SIZE)
         return chunks[toIndex(x, y, z)]
     }
-
 }
