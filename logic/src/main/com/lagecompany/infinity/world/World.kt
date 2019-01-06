@@ -1,11 +1,11 @@
 package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.math.MutVector3I
 import com.lagecompany.infinity.math.Vector3I
 import com.lagecompany.infinity.utils.Side
 import com.lagecompany.infinity.world.buffer.VoxSideRef
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -43,9 +43,22 @@ class World : Disposable {
         coroutineScope {
             chunks.forEach {
                 launch(Dispatchers.Default) {
-                    generateChunk(it)
+                    async {
+                        generateChunk(it)
+                    }
+                    async {
+                        buildChunkNeighborhood(it)
+                    }
                 }
             }
+        }
+    }
+
+    fun allocAllChunks() {
+        chunks.forEach {
+            it.types.alloc()
+            it.neighborSides.alloc()
+            it.visibleSides.alloc()
         }
     }
 
@@ -53,10 +66,10 @@ class World : Disposable {
         chunks.forEach(Chunk::dispose)
     }
 
-    private fun generateChunk(chunk: Chunk) {
+    internal fun generateChunk(chunk: Chunk) {
         setChunkPosition(chunk)
 
-        chunk.types.alloc()
+        var hasVoxel = false
 
         val generator = NoiseGenerator.default
         generator.generate(chunk)
@@ -66,21 +79,38 @@ class World : Disposable {
 
             if (height >= Chunk.SIZE) continue
 
+            if (!hasVoxel)
+                hasVoxel = true
+
             val (x, z) = NoiseGenerator.fromIndex(i)
             for (y in 0..height.toInt()) {
                 chunk.types[x, y, z].set(VoxelType.Grass).save()
             }
         }
+
+        if (!hasVoxel)
+            chunk.dispose()
     }
 
-    private fun buildChunkNeighborhood(chunk: Chunk) {
-        for (x in 0 until Chunk.SIZE) {
-            for (y in 0 until Chunk.SIZE) {
-                for (z in 0 until Chunk.SIZE) {
-                    val sidesRef = chunk.neighborSides[x, y, z]
+    internal suspend fun buildChunkNeighborhood(chunk: Chunk) {
+        if (chunk.isEmpty)
+            return
 
-                    for (side in Side.allSides) {
-                        sidesRef[side] = getVoxelNeighbor(chunk, x, y, z, side)
+        coroutineScope {
+            for (x in 0 until Chunk.SIZE) {
+                launch(Dispatchers.Default) {
+                    for (y in 0 until Chunk.SIZE) {
+                        for (z in 0 until Chunk.SIZE) {
+                            if (chunk.types[x, y, z].get() != VoxelType.None) {
+                                val sidesRef = chunk.neighborSides[x, y, z]
+
+                                for (side in Side.allSides) {
+                                    sidesRef[side] = getVoxelNeighbor(chunk, x, y, z, side)
+                                }
+
+                                sidesRef.save()
+                            }
+                        }
                     }
                 }
             }
@@ -90,13 +120,10 @@ class World : Disposable {
     private fun getVoxelNeighbor(chunk: Chunk, x: Int, y: Int, z: Int, side: Side): VoxSideRef? {
         val dir = side.toDirection()
 
-        //nx stands for neighbor x
-        val nx = dir.x + x
-        val ny = dir.y + y
-        val nz = dir.z + z
+        val neighbor = dir.mutable().add(x, y, z)
 
-        if (chunk.isOnBounds(nx, ny, nz)) {
-            return chunk.visibleSides[nx, ny, nz]
+        if (chunk.isOnBounds(neighbor.x, neighbor.x, neighbor.x)) {
+            return chunk.visibleSides[neighbor.x, neighbor.x, neighbor.x]
         } else {
             //cx stands for chunk x
             val (cx, cy, cz) = fromIndex(chunk.index)
@@ -110,10 +137,13 @@ class World : Disposable {
                 return null
 
             val neighborChunk = this[cx, cy, cz]
-            MutVector3I(nx, ny, nz).reverse(0, Chunk.SIZE - 1)
-        }
 
-        return null
+            if (neighborChunk.isEmpty)
+                return null
+
+            neighbor.reverse(0, Chunk.SIZE - 1)
+            return neighborChunk.visibleSides[neighbor.x, neighbor.x, neighbor.x]
+        }
     }
 
     private fun isOnBounds(x: Int, y: Int, z: Int): Boolean {

@@ -36,11 +36,12 @@ class VoxSideRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxSideRef>(b
 }
 
 class WeakVoxSideRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxSideRef>(buffer, index) {
-    constructor(ref: VoxSideRef?) : this(ref?.buffer ?: null, ref?.index ?: 0) {
-
-    }
+    constructor(ref: VoxSideRef?) : this(ref?.buffer, ref?.index ?: 0)
 
     override fun get(): VoxSideRef? {
-        return VoxSideRef(buffer.get() ?: return null, index)
+        val buffer = buffer.get()
+        if (buffer == null)
+            return null
+        return VoxSideRef(buffer, index)
     }
 }

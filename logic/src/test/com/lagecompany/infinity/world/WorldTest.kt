@@ -1,6 +1,7 @@
 package com.lagecompany.infinity.world
 
 import com.lagecompany.infinity.math.Vector3I
+import com.lagecompany.infinity.utils.Side
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
@@ -58,8 +59,20 @@ internal class WorldTest {
     @Test
     fun generateChunk() {
         val world = World()
+        val c = world[0]
         runBlocking {
-            world.generateAllChunks()
+            world.allocAllChunks()
+            world.generateChunk(c)
+
+            c.types[0, 1, 0].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+
+            world.buildChunkNeighborhood(c)
         }
+
+        c.visibleSides[0, 0, 0].set(Side.DOWN, true).save()
+        val ref = c.neighborSides[0, 1, 0][Side.DOWN].get()
+
+        Assertions.assertNotNull(ref)
+        Assertions.assertEquals(true, ref!![Side.DOWN])
     }
 }

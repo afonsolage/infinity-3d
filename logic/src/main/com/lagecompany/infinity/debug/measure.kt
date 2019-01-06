@@ -1,6 +1,6 @@
 package com.lagecompany.infinity.debug
 
-import java.util.ArrayList
+import java.util.*
 
 
 /**
@@ -11,7 +11,10 @@ fun simpleMeasureTest(
         ITERATIONS: Int = 1000,
         TEST_COUNT: Int = 10,
         WARM_COUNT: Int = 2,
-        callback: ()->Unit
+        prepare: () -> Unit = {},
+        dispose: () -> Unit = {},
+        callback: () -> Unit
+
 ) {
     val results = ArrayList<Long>()
     var totalTime = 0L
@@ -20,22 +23,26 @@ fun simpleMeasureTest(
     println("$PRINT_REFIX -> go")
 
     while (++t <= TEST_COUNT + WARM_COUNT) {
-        val startTime = System.currentTimeMillis()
 
+        var accumTime = 0L
         var i = 0
-        while (i++ < ITERATIONS)
+        while (i++ < ITERATIONS) {
+            prepare()
+            val startTime = System.currentTimeMillis()
             callback()
+            accumTime += System.currentTimeMillis() - startTime
+            dispose()
+        }
 
         if (t <= WARM_COUNT) {
             println("$PRINT_REFIX Warming $t of $WARM_COUNT")
             continue
         }
 
-        val time = System.currentTimeMillis() - startTime
-        println(PRINT_REFIX+" "+time.toString()+"ms")
+        println(PRINT_REFIX + " " + accumTime.toString() + "ms")
 
-        results.add(time)
-        totalTime += time
+        results.add(accumTime)
+        totalTime += accumTime
     }
 
     results.sort()

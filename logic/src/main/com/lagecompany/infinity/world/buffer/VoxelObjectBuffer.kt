@@ -41,7 +41,7 @@ abstract class VoxObjectRef<T, O : Any>(protected val buffer: VoxelObjectBuffer<
     }
 }
 
-open class VoxelObjectBuffer<T : Any> {
+abstract class VoxelObjectBuffer<T : Any> {
     companion object {
         val emptyBuffer = Array<Any>(0) {}
 
@@ -58,9 +58,11 @@ open class VoxelObjectBuffer<T : Any> {
 
     val isEmpty get () = buffer.isEmpty()
 
+    protected abstract fun instanciateObject(): T
+
     fun alloc() {
         assert(buffer === emptyBuffer)
-        buffer = Array(Chunk.BUFFER_SIZE) {}
+        buffer = Array(Chunk.BUFFER_SIZE) { instanciateObject() }
     }
 
     fun free() {

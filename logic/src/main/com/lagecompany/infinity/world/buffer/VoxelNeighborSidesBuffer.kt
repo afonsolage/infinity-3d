@@ -2,15 +2,15 @@ package com.lagecompany.infinity.world.buffer
 
 import com.lagecompany.infinity.utils.Side
 
-data class NeighborhoodSides(var front: WeakVoxSideRef,
-                             var right: WeakVoxSideRef,
-                             var back: WeakVoxSideRef,
-                             var left: WeakVoxSideRef,
-                             var up: WeakVoxSideRef,
-                             var down: WeakVoxSideRef)
+data class NeighborhoodSides(var front: WeakVoxSideRef = WeakVoxSideRef(null, 0),
+                             var right: WeakVoxSideRef = WeakVoxSideRef(null, 0),
+                             var back: WeakVoxSideRef = WeakVoxSideRef(null, 0),
+                             var left: WeakVoxSideRef = WeakVoxSideRef(null, 0),
+                             var up: WeakVoxSideRef = WeakVoxSideRef(null, 0),
+                             var down: WeakVoxSideRef = WeakVoxSideRef(null, 0))
 
 class VoxNeighborSidesRef(buffer: VoxelObjectBuffer<NeighborhoodSides>, index: Int)
-: VoxObjectRef<VoxNeighborSidesRef, NeighborhoodSides>(buffer, index) {
+    : VoxObjectRef<VoxNeighborSidesRef, NeighborhoodSides>(buffer, index) {
     operator fun get(side: Side): WeakVoxSideRef {
         return when (side) {
             Side.FRONT -> value.front
@@ -35,6 +35,10 @@ class VoxNeighborSidesRef(buffer: VoxelObjectBuffer<NeighborhoodSides>, index: I
 }
 
 class VoxelNeighborSidesBuffer : VoxelObjectBuffer<NeighborhoodSides>() {
+    override fun instanciateObject(): NeighborhoodSides {
+        return NeighborhoodSides()
+    }
+
     operator fun get(index: Int): VoxNeighborSidesRef {
         return VoxNeighborSidesRef(this, index)
     }
