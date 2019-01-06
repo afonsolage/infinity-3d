@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
 import com.lagecompany.infinity.utils.Side
 import com.lagecompany.infinity.world.buffer.VoxSideRef
+import com.lagecompany.infinity.world.buffer.VoxTypeRef
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -75,7 +76,8 @@ class World : Disposable {
                                 val neighborhoodRef = chunk.neighborSides[x, y, z]
 
                                 for (side in Side.allSides) {
-                                    visibleRef[side] = neighborhoodRef[side].get()?.isNotVisible ?: true
+                                    val type = neighborhoodRef[side].get()?.get()
+                                    visibleRef[side] = type == null || type == VoxelType.None
                                 }
 
                                 visibleRef.save()
@@ -150,13 +152,13 @@ class World : Disposable {
         }
     }
 
-    private fun getVoxelNeighbor(chunk: Chunk, x: Int, y: Int, z: Int, side: Side): VoxSideRef? {
+    private fun getVoxelNeighbor(chunk: Chunk, x: Int, y: Int, z: Int, side: Side): VoxTypeRef? {
         val dir = side.toDirection()
 
         val neighbor = dir.mutable().add(x, y, z)
 
-        if (chunk.isOnBounds(neighbor.x, neighbor.x, neighbor.x)) {
-            return chunk.visibleSides[neighbor.x, neighbor.x, neighbor.x]
+        if (chunk.isOnBounds(neighbor.x, neighbor.y, neighbor.z)) {
+            return chunk.types[neighbor.x, neighbor.y, neighbor.z]
         } else {
             //cx stands for chunk x
             val (cx, cy, cz) = fromIndex(chunk.index)
@@ -175,7 +177,7 @@ class World : Disposable {
                 return null
 
             neighbor.reverse(0, Chunk.SIZE - 1)
-            return neighborChunk.visibleSides[neighbor.x, neighbor.x, neighbor.x]
+            return neighborChunk.types[neighbor.x, neighbor.y, neighbor.z]
         }
     }
 

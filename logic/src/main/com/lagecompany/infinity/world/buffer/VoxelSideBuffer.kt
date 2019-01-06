@@ -32,6 +32,10 @@ class VoxSideRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxSideRef>(b
         return this
     }
 
+    override fun toString(): String {
+        return "VoxSideRef(f=${get(Side.FRONT)},r=${get(Side.RIGHT)},b=${get(Side.BACK)},l=${get(Side.LEFT)},u=${get(Side.UP)},d=${get(Side.DOWN)})"
+    }
+
     val isVisible get() = value > 0
     val isNotVisible get() = !isVisible
 }
@@ -40,9 +44,6 @@ class WeakVoxSideRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxS
     constructor(ref: VoxSideRef?) : this(ref?.buffer, ref?.index ?: 0)
 
     override fun get(): VoxSideRef? {
-        val buffer = buffer.get()
-        if (buffer == null)
-            return null
-        return VoxSideRef(buffer, index)
+        return VoxSideRef(buffer.get() ?: return null, index)
     }
 }

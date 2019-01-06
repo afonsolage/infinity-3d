@@ -2,6 +2,7 @@ package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.world.buffer.VoxelNeighborSidesBuffer
+import com.lagecompany.infinity.world.buffer.VoxelNeighborTypeBuffer
 import com.lagecompany.infinity.world.buffer.VoxelSideBuffer
 import com.lagecompany.infinity.world.buffer.VoxelTypeBuffer
 
@@ -16,7 +17,7 @@ class Chunk(val index: Int) : Disposable {
 
     val types = VoxelTypeBuffer()
     val visibleSides = VoxelSideBuffer()
-    val neighborSides = VoxelNeighborSidesBuffer()
+    val neighborSides = VoxelNeighborTypeBuffer()
 
     var x: Int = 0
     var y: Int = 0

@@ -66,13 +66,33 @@ internal class WorldTest {
 
             c.types[0, 1, 0].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
 
+
+            //Let's surround a voxel to test it's visibility
+            c.types[3, 3, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[3, 3, 4].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[3, 3, 2].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[3, 4, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[3, 2, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[4, 3, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[2, 3, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+
             world.buildChunkNeighborhood(c)
+
+            world.checkVisibility(c)
         }
 
-        c.visibleSides[0, 0, 0].set(Side.DOWN, true).save()
+        c.types[0, 0, 0].set(VoxelType.Grass).save()
         val ref = c.neighborSides[0, 1, 0][Side.DOWN].get()
 
         Assertions.assertNotNull(ref)
-        Assertions.assertEquals(true, ref!![Side.DOWN])
+        Assertions.assertEquals(VoxelType.Grass, ref!!.get())
+
+        Assertions.assertTrue(c.visibleSides[3, 4, 3].isVisible)
+        Assertions.assertTrue(c.visibleSides[3, 2, 3].isVisible)
+        Assertions.assertTrue(c.visibleSides[4, 3, 3].isVisible)
+        Assertions.assertTrue(c.visibleSides[2, 3, 3].isVisible)
+        Assertions.assertTrue(c.visibleSides[3, 3, 4].isVisible)
+        Assertions.assertTrue(c.visibleSides[3, 3, 2].isVisible)
+        Assertions.assertFalse(c.visibleSides[3, 3, 3].isVisible) { "${c.visibleSides[3, 3, 3]} should not be visible" }
     }
 }

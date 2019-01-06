@@ -24,6 +24,8 @@ class VoxTypeRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxTypeRef>(b
 }
 
 class WeakVoxTypeRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxTypeRef>(buffer, index) {
+    constructor(ref: VoxTypeRef?) : this(ref?.buffer, ref?.index ?: 0)
+
     override fun get(): VoxTypeRef? {
         return VoxTypeRef(buffer.get() ?: return null, index)
     }
