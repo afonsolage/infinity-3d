@@ -21,14 +21,6 @@ class NoiseGenerator(vararg noiseLayers: Layer) {
         }
     }
 
-    suspend fun generateSequence(chunk: Chunk) = sequence {
-        for (x in chunk.x until chunk.x + Chunk.SIZE) {
-            for (z in chunk.z until chunk.z + Chunk.SIZE) {
-                yield(layers.sumByDouble { SimplexNoise.generateSimplexNoise(x, z, it.freq).toDouble() }.toFloat())
-            }
-        }
-    }
-
     operator fun get(index: Int): Float {
         return layers.sumByDouble { (it.elevations[index] * it.weight).toDouble() }.toFloat()
     }

@@ -3,6 +3,7 @@ package com.lagecompany.infinity.renderer
 import com.lagecompany.infinity.stage.GameStage
 import com.lagecompany.infinity.stage.StageComponent
 import com.lagecompany.infinity.world.World
+import kotlinx.coroutines.runBlocking
 
 class WorldRenderer : StageComponent {
 
@@ -11,7 +12,9 @@ class WorldRenderer : StageComponent {
     val world = World()
 
     override fun initialize() {
-        world.generateAllChunks()
+        runBlocking {
+            world.generateAllChunks()
+        }
 
         for(i in 0 until World.SIZE) {
             val chunk = world[i]

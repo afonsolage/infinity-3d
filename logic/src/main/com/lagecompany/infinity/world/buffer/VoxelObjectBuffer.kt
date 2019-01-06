@@ -1,9 +1,17 @@
 package com.lagecompany.infinity.world.buffer
 
-import com.lagecompany.infinity.world.Chunk
 
-open class VoxRef<T>(protected val buffer: VoxelBuffer, protected val index: Int) {
-    protected var value: Byte = buffer.getValue(index)
+import com.lagecompany.infinity.world.Chunk
+import java.lang.ref.WeakReference
+
+abstract class WeakVoxObjectRef<T, O : Any>(buffer: VoxelObjectBuffer<O>?, protected val index: Int) {
+    protected val buffer = WeakReference(buffer)
+
+    abstract fun get(): T?
+}
+
+abstract class VoxObjectRef<T, O : Any>(protected val buffer: VoxelObjectBuffer<O>, protected val index: Int) {
+    protected var value: O = buffer.getValue(index)
 
     fun save(): T {
         buffer.setValue(index, value)
@@ -15,15 +23,10 @@ open class VoxRef<T>(protected val buffer: VoxelBuffer, protected val index: Int
         return this as T
     }
 
-    fun clear(): T {
-        value = 0
-        return this as T
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
 
-        if (other !is VoxRef<*>) return false
+        if (other !is VoxObjectRef<*, *>) return false
 
         if (buffer != other.buffer) return false
         if (index != other.index) return false
@@ -38,9 +41,9 @@ open class VoxRef<T>(protected val buffer: VoxelBuffer, protected val index: Int
     }
 }
 
-open class VoxelBuffer {
+open class VoxelObjectBuffer<T : Any> {
     companion object {
-        val emptyBuffer = byteArrayOf()
+        val emptyBuffer = Array<Any>(0) {}
 
         fun toIndex(x: Int, y: Int, z: Int): Int {
             assert(x in 0 until Chunk.SIZE) { "Failed to setValue: Invalid X coordinates" }
@@ -57,21 +60,22 @@ open class VoxelBuffer {
 
     fun alloc() {
         assert(buffer === emptyBuffer)
-        buffer = ByteArray(Chunk.BUFFER_SIZE)
+        buffer = Array(Chunk.BUFFER_SIZE) {}
     }
 
     fun free() {
         buffer = emptyBuffer
     }
 
-    internal fun getValue(index: Int): Byte {
+    @Suppress("UNCHECKED_CAST")
+    internal fun getValue(index: Int): T {
         assert(index in 0 until Chunk.BUFFER_SIZE) { "Failed to getValue: Invalid index" }
         assert(buffer.isNotEmpty()) { "Failed to getValue:  Buffer isn't allocated" }
 
-        return buffer[index]
+        return buffer[index] as T
     }
 
-    internal fun getValue(x: Int, y: Int, z: Int): Byte {
+    internal fun getValue(x: Int, y: Int, z: Int): T {
         assert(x in 0 until Chunk.SIZE) { "Failed to getValue: Invalid X coordinates" }
         assert(y in 0 until Chunk.SIZE) { "Failed to getValue: Invalid Y coordinates" }
         assert(z in 0 until Chunk.SIZE) { "Failed to getValue: Invalid Z coordinates" }
@@ -79,14 +83,14 @@ open class VoxelBuffer {
         return getValue(toIndex(x, y, z))
     }
 
-    internal fun setValue(index: Int, value: Byte) {
+    internal fun setValue(index: Int, value: T) {
         assert(index in 0 until Chunk.BUFFER_SIZE) { "Failed to setValue: Invalid index" }
         assert(buffer.isNotEmpty()) { "Failed to setValue:  Buffer isn't allocated" }
 
         buffer[index] = value
     }
 
-    internal fun setValue(x: Int, y: Int, z: Int, value: Byte) {
+    internal fun setValue(x: Int, y: Int, z: Int, value: T) {
         assert(x in 0 until Chunk.SIZE) { "Failed to setValue: Invalid X coordinates" }
         assert(y in 0 until Chunk.SIZE) { "Failed to setValue: Invalid Y coordinates" }
         assert(z in 0 until Chunk.SIZE) { "Failed to setValue: Invalid Z coordinates" }

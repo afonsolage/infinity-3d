@@ -97,6 +97,22 @@ class MutVector3I(override var x: Int, override var y: Int, override var z: Int)
     fun immutable(): Vector3I {
         return Vector3I(this)
     }
+
+    fun reverse(begin: Int, end: Int): Vector3I {
+        val rev = { v: Int ->
+            when {
+                v < begin -> end + (v + begin + 1)
+                v > end -> begin + (v - end - 1)
+                else -> v
+            }
+        }
+
+        x = rev(x)
+        y = rev(y)
+        z = rev(z)
+
+        return this
+    }
 }
 
 open class Vector3I(open val x: Int, open val y: Int, open val z: Int) : Serializable {

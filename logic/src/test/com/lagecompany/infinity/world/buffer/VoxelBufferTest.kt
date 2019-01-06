@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 
 internal class VoxelBufferTest {
 
-    private val buffer = VoxelBuffer()
+    private val buffer = VoxelByteBuffer()
 
     @BeforeEach
     fun setUp() {
@@ -26,16 +26,16 @@ internal class VoxelBufferTest {
         for (x in 0 until Chunk.SIZE) {
             for (y in 0 until Chunk.SIZE) {
                 for (z in 0 until Chunk.SIZE) {
-                    Assertions.assertEquals(i++, VoxelBuffer.toIndex(x, y, z))
+                    Assertions.assertEquals(i++, VoxelByteBuffer.toIndex(x, y, z))
                 }
             }
         }
 
-        Assertions.assertEquals(1, VoxelBuffer.toIndex(0, 0, 1))
-        Assertions.assertEquals(0, VoxelBuffer.toIndex(0, 0, 0))
-        Assertions.assertEquals(16, VoxelBuffer.toIndex(0, 1, 0))
-        Assertions.assertEquals(256, VoxelBuffer.toIndex(1, 0, 0))
-        Assertions.assertEquals(257, VoxelBuffer.toIndex(1, 0, 1))
+        Assertions.assertEquals(1, VoxelByteBuffer.toIndex(0, 0, 1))
+        Assertions.assertEquals(0, VoxelByteBuffer.toIndex(0, 0, 0))
+        Assertions.assertEquals(16, VoxelByteBuffer.toIndex(0, 1, 0))
+        Assertions.assertEquals(256, VoxelByteBuffer.toIndex(1, 0, 0))
+        Assertions.assertEquals(257, VoxelByteBuffer.toIndex(1, 0, 1))
     }
 
 

@@ -1,6 +1,7 @@
 package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
+import com.lagecompany.infinity.world.buffer.VoxelNeighborSidesBuffer
 import com.lagecompany.infinity.world.buffer.VoxelSideBuffer
 import com.lagecompany.infinity.world.buffer.VoxelTypeBuffer
 
@@ -14,7 +15,8 @@ class Chunk(val index: Int) : Disposable {
     }
 
     val types = VoxelTypeBuffer()
-    val visible = VoxelSideBuffer()
+    val visibleSides = VoxelSideBuffer()
+    val neighborSides = VoxelNeighborSidesBuffer()
 
     var x: Int = 0
     var y: Int = 0
@@ -24,6 +26,10 @@ class Chunk(val index: Int) : Disposable {
 
     override fun dispose() {
         types.free()
-        visible.free()
+        neighborSides.free()
+    }
+
+    inline fun isOnBounds(x: Int, y: Int, z: Int): Boolean {
+        return x in 0 until Chunk.SIZE && y in 0 until Chunk.SIZE && z in 0 until Chunk.SIZE
     }
 }

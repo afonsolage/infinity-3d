@@ -2,7 +2,7 @@ package com.lagecompany.infinity.world.buffer
 
 import com.lagecompany.infinity.world.VoxelType
 
-class VoxelTypeBuffer: VoxelBuffer() {
+class VoxelTypeBuffer : VoxelByteBuffer() {
     operator fun get(index: Int): VoxTypeRef {
         return VoxTypeRef(this, index)
     }
@@ -12,7 +12,7 @@ class VoxelTypeBuffer: VoxelBuffer() {
     }
 }
 
-class VoxTypeRef(buffer: VoxelBuffer, index: Int) : VoxRef<VoxTypeRef>(buffer, index) {
+class VoxTypeRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxTypeRef>(buffer, index) {
     fun get(): VoxelType {
         return VoxelType.get(value.toInt())
     }
@@ -20,5 +20,11 @@ class VoxTypeRef(buffer: VoxelBuffer, index: Int) : VoxRef<VoxTypeRef>(buffer, i
     fun set(type: VoxelType): VoxTypeRef {
         value = type.ordinal.toByte()
         return this
+    }
+}
+
+class WeakVoxTypeRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxTypeRef>(buffer, index) {
+    override fun get(): VoxTypeRef? {
+        return VoxTypeRef(buffer.get() ?: return null, index)
     }
 }

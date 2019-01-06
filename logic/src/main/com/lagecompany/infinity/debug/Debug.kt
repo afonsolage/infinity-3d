@@ -12,11 +12,4 @@ fun main(args: Array<String>) {
         }
         world.clearAllChunks()
     }
-    println("--------SEQUENCE-----------")
-    simpleMeasureTest {
-        runBlocking {
-            world.generateAllChunksSequence()
-        }
-        world.clearAllChunks()
-    }
 }

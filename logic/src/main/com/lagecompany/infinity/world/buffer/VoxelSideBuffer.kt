@@ -5,7 +5,7 @@ import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
 
-class VoxelSideBuffer : VoxelBuffer() {
+class VoxelSideBuffer : VoxelByteBuffer() {
     operator fun get(index: Int): VoxSideRef {
         return VoxSideRef(this, index)
     }
@@ -15,7 +15,7 @@ class VoxelSideBuffer : VoxelBuffer() {
     }
 }
 
-class VoxSideRef(buffer: VoxelBuffer, index: Int) : VoxRef<VoxSideRef>(buffer, index) {
+class VoxSideRef(buffer: VoxelByteBuffer, index: Int) : VoxByteRef<VoxSideRef>(buffer, index) {
     operator fun get(side: Side): Boolean {
         val mask = (1 shl side.ordinal).toByte()
         return value and mask == mask
@@ -30,5 +30,17 @@ class VoxSideRef(buffer: VoxelBuffer, index: Int) : VoxRef<VoxSideRef>(buffer, i
             value = value or mask
 
         return this
+    }
+
+    val isVisible get() = value > 0
+}
+
+class WeakVoxSideRef(buffer: VoxelByteBuffer?, index: Int) : WeakVoxByteRef<VoxSideRef>(buffer, index) {
+    constructor(ref: VoxSideRef?) : this(ref?.buffer ?: null, ref?.index ?: 0) {
+
+    }
+
+    override fun get(): VoxSideRef? {
+        return VoxSideRef(buffer.get() ?: return null, index)
     }
 }

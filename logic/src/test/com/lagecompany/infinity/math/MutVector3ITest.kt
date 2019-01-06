@@ -1,10 +1,9 @@
 package com.lagecompany.infinity.math
 
 import com.badlogic.gdx.math.MathUtils
+import com.lagecompany.infinity.world.Chunk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 internal class MutVector3ITest {
 
@@ -94,7 +93,7 @@ internal class MutVector3ITest {
         repeat(10) {
             val v = rnd().setToRandomDirection()
 
-            Assertions.assertFalse(v.isZero) {"$v is zero (${v.isZero})"}
+            Assertions.assertFalse(v.isZero) { "$v is zero (${v.isZero})" }
 
             if (last == v)
                 equalsCount++
@@ -164,6 +163,14 @@ internal class MutVector3ITest {
         }
     }
 
+    @Test
+    fun reverse() {
+        Assertions.assertEquals(Vector3I(0, 15, 0), MutVector3I(0, -1, 0).reverse(0, Chunk.SIZE - 1))
+        Assertions.assertEquals(Vector3I(0, 0, 0), MutVector3I(0, 16, 0).reverse(0, Chunk.SIZE - 1))
+        Assertions.assertEquals(Vector3I(0, 15, 4), MutVector3I(16, -1, 4).reverse(0, Chunk.SIZE - 1))
+        Assertions.assertEquals(Vector3I(2, 0, 0), MutVector3I(18, 16, 0).reverse(0, Chunk.SIZE - 1))
+        Assertions.assertEquals(Vector3I(2, 11, 0), MutVector3I(18, -5, 0).reverse(0, Chunk.SIZE - 1))
+    }
 
     @Test
     fun setLength2() {

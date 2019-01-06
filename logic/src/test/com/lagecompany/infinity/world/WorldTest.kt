@@ -1,6 +1,7 @@
 package com.lagecompany.infinity.world
 
 import com.lagecompany.infinity.math.Vector3I
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -57,6 +58,8 @@ internal class WorldTest {
     @Test
     fun generateChunk() {
         val world = World()
-        world.generateAllChunks()
+        runBlocking {
+            world.generateAllChunks()
+        }
     }
 }

@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.VertexAttributes
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.world.Chunk
-import com.lagecompany.infinity.world.buffer.VoxelBuffer
 
 const val MAX_VERTICES = 8 * Chunk.BUFFER_SIZE // 3 float per 3 vertices per 8 vertices per chunk
 const val MAX_INDICES = 3 * 2 * 6 * Chunk.BUFFER_SIZE // 3 indices per triangle, 2 triangle per side, 6 sides

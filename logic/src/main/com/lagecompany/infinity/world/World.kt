@@ -1,7 +1,10 @@
 package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
+import com.lagecompany.infinity.math.MutVector3I
 import com.lagecompany.infinity.math.Vector3I
+import com.lagecompany.infinity.utils.Side
+import com.lagecompany.infinity.world.buffer.VoxSideRef
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -10,9 +13,9 @@ class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 5
-        const val HEIGHT = 5
-        const val DEPTH = 5
+        const val WIDTH = 1
+        const val HEIGHT = 1
+        const val DEPTH = 1
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -36,18 +39,12 @@ class World : Disposable {
         }
     }
 
-    suspend fun generateAllChunks() = coroutineScope {
-        chunks.forEachIndexed { idx, chunk ->
-            launch(Dispatchers.Default) {
-                generateChunk(idx, chunk)
-            }
-        }
-    }
-
-    suspend fun generateAllChunksSequence() = coroutineScope {
-        chunks.forEachIndexed { idx, chunk ->
-            launch(Dispatchers.Default) {
-                generateChunkSequence(idx, chunk)
+    suspend fun generateAllChunks() {
+        coroutineScope {
+            chunks.forEach {
+                launch(Dispatchers.Default) {
+                    generateChunk(it)
+                }
             }
         }
     }
@@ -56,11 +53,10 @@ class World : Disposable {
         chunks.forEach(Chunk::dispose)
     }
 
-    private fun generateChunk(index: Int, chunk: Chunk) {
-        setChunkPosition(index, chunk)
+    private fun generateChunk(chunk: Chunk) {
+        setChunkPosition(chunk)
 
         chunk.types.alloc()
-
 
         val generator = NoiseGenerator.default
         generator.generate(chunk)
@@ -77,27 +73,55 @@ class World : Disposable {
         }
     }
 
+    private fun buildChunkNeighborhood(chunk: Chunk) {
+        for (x in 0 until Chunk.SIZE) {
+            for (y in 0 until Chunk.SIZE) {
+                for (z in 0 until Chunk.SIZE) {
+                    val sidesRef = chunk.neighborSides[x, y, z]
 
-    private suspend fun generateChunkSequence(index: Int, chunk: Chunk) {
-        setChunkPosition(index, chunk)
-
-        chunk.types.alloc()
-        val generator = NoiseGenerator.default.generateSequence(chunk)
-
-        var i = 0
-        for (height in generator) {
-            if (height < Chunk.SIZE) {
-                val (x, z) = NoiseGenerator.fromIndex(i++)
-                for (y in 0..height.toInt()) {
-                    chunk.types[x, y, z].set(VoxelType.Grass).save()
+                    for (side in Side.allSides) {
+                        sidesRef[side] = getVoxelNeighbor(chunk, x, y, z, side)
+                    }
                 }
             }
         }
     }
 
-    private fun setChunkPosition(index: Int, chunk: Chunk) {
+    private fun getVoxelNeighbor(chunk: Chunk, x: Int, y: Int, z: Int, side: Side): VoxSideRef? {
+        val dir = side.toDirection()
 
-        val vec = fromIndex(index)
+        //nx stands for neighbor x
+        val nx = dir.x + x
+        val ny = dir.y + y
+        val nz = dir.z + z
+
+        if (chunk.isOnBounds(nx, ny, nz)) {
+            return chunk.visibleSides[nx, ny, nz]
+        } else {
+            //cx stands for chunk x
+            val (cx, cy, cz) = fromIndex(chunk.index)
+
+            //ncx stands for neighbor chunk x
+            val ncx = cx + dir.x
+            val ncy = cy + dir.y
+            val ncz = cz + dir.z
+
+            if (!isOnBounds(ncx, ncy, ncz))
+                return null
+
+            val neighborChunk = this[cx, cy, cz]
+            MutVector3I(nx, ny, nz).reverse(0, Chunk.SIZE - 1)
+        }
+
+        return null
+    }
+
+    private fun isOnBounds(x: Int, y: Int, z: Int): Boolean {
+        return x in 0 until World.X_SIZE && y in 0 until World.Y_SIZE && z in 0 until World.Z_SIZE
+    }
+
+    private fun setChunkPosition(chunk: Chunk) {
+        val vec = fromIndex(chunk.index)
         chunk.x = vec.x * Chunk.SIZE
         chunk.y = vec.y * Chunk.SIZE
         chunk.z = vec.z * Chunk.SIZE
