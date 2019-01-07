@@ -13,6 +13,8 @@ class WorldRenderer : StageComponent {
 
     override fun initialize() {
         runBlocking {
+            //TODO: Find better way to do it
+            world.allocAllChunks()
             world.generateAllChunks()
         }
 
