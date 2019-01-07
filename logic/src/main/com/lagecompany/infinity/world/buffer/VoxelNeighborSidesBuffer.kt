@@ -22,7 +22,7 @@ class VoxNeighborSidesRef(buffer: VoxelObjectBuffer<NeighborhoodSides>, index: I
         }
     }
 
-    operator fun set(side: Side, neighbor: VoxSideRef?) {
+    operator fun set(side: Side, neighbor: VoxSideRef?): VoxNeighborSidesRef {
         when (side) {
             Side.FRONT -> value.front = WeakVoxSideRef(neighbor)
             Side.RIGHT -> value.right = WeakVoxSideRef(neighbor)
@@ -31,6 +31,7 @@ class VoxNeighborSidesRef(buffer: VoxelObjectBuffer<NeighborhoodSides>, index: I
             Side.UP -> value.up = WeakVoxSideRef(neighbor)
             Side.DOWN -> value.down = WeakVoxSideRef(neighbor)
         }
+        return this
     }
 }
 

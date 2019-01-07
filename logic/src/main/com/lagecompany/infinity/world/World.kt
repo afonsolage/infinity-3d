@@ -3,7 +3,6 @@ package com.lagecompany.infinity.world
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
 import com.lagecompany.infinity.utils.Side
-import com.lagecompany.infinity.world.buffer.VoxSideRef
 import com.lagecompany.infinity.world.buffer.VoxTypeRef
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -76,8 +75,7 @@ class World : Disposable {
                                 val neighborhoodRef = chunk.neighborSides[x, y, z]
 
                                 for (side in Side.allSides) {
-                                    val type = neighborhoodRef[side].get()?.get()
-                                    visibleRef[side] = type == null || type == VoxelType.None
+                                    visibleRef[side] = VoxelType.isVisible(neighborhoodRef[side].get()?.get())
                                 }
 
                                 visibleRef.save()

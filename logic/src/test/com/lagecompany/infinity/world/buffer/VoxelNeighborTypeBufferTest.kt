@@ -23,6 +23,15 @@ internal class VoxelNeighborTypeBufferTest {
 
     @Test
     fun get() {
+        Assertions.assertThrows(AssertionError::class.java) { buffer[-1] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[Chunk.BUFFER_SIZE] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[-1, 0, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[Chunk.SIZE, 0, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, -1, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, Chunk.SIZE, 0] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, -1] }
+        Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, Chunk.SIZE] }
+
         val byteBuffer = VoxelByteBuffer()
         byteBuffer.alloc()
         val ref = VoxTypeRef(byteBuffer, 15)

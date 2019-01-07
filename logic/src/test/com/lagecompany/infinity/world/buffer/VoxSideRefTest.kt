@@ -61,9 +61,4 @@ internal class VoxSideRefTest {
         buffer[1, 0, 0].set(Side.FRONT, true).save()
         Assertions.assertEquals(buffer[Chunk.SIZE * Chunk.SIZE][Side.FRONT], true)
     }
-
-    @Test
-    fun set() {
-
-    }
 }

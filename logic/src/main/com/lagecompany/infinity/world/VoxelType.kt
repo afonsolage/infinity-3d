@@ -16,5 +16,9 @@ enum class VoxelType {
             assert(code in 0 until types.size) { "Failed to getValue VoxelType" }
             return types[code]
         }
+
+        fun isVisible(type: VoxelType?): Boolean {
+            return type != null && type != None
+        }
     }
 }
