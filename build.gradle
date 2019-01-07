@@ -76,9 +76,13 @@ project(":logic") {
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+"
-        
-        testCompile 'org.junit.jupiter:junit-jupiter-api:5.2.0'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 

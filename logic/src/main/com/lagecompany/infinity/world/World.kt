@@ -75,7 +75,7 @@ class World : Disposable {
                                 val neighborhoodRef = chunk.neighborSides[x, y, z]
 
                                 for (side in Side.allSides) {
-                                    visibleRef[side] = VoxelType.isVisible(neighborhoodRef[side].get()?.get())
+                                    visibleRef[side] = !VoxelType.isVisible(neighborhoodRef[side].get()?.get())
                                 }
 
                                 visibleRef.save()
