@@ -4,18 +4,14 @@ import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.math.Vector3I
 import com.lagecompany.infinity.utils.Side
 import com.lagecompany.infinity.world.buffer.VoxTypeRef
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 16
-        const val HEIGHT = 16
-        const val DEPTH = 16
+        const val WIDTH = 1
+        const val HEIGHT = 1
+        const val DEPTH = 1
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -39,48 +35,32 @@ class World : Disposable {
         }
     }
 
-    suspend fun generateAllChunks() {
-        coroutineScope {
-            chunks.forEach {
-                launch(Dispatchers.Default) {
-                    async {
-                        generateChunk(it)
-                    }
-                    async {
-                        buildChunkNeighborhood(it)
-                    }
-                }
-            }
+    fun generateAllChunks() {
+        chunks.forEach {
+            generateChunk(it)
+            buildChunkNeighborhood(it)
         }
-        coroutineScope {
-            chunks.forEach {
-                launch(Dispatchers.Default) {
-                    checkVisibility(it)
-                }
-            }
+        chunks.forEach {
+            checkVisibility(it)
         }
     }
 
-    internal suspend fun checkVisibility(chunk: Chunk) {
+    internal fun checkVisibility(chunk: Chunk) {
         if (chunk.isEmpty)
             return
 
-        coroutineScope {
-            for (x in 0 until Chunk.SIZE) {
-                launch(Dispatchers.Default) {
-                    for (y in 0 until Chunk.SIZE) {
-                        for (z in 0 until Chunk.SIZE) {
-                            if (chunk.types[x, y, z].get() != VoxelType.None) {
-                                val visibleRef = chunk.visibleSides[x, y, z]
-                                val neighborhoodRef = chunk.neighborSides[x, y, z]
+        for (x in 0 until Chunk.SIZE) {
+            for (y in 0 until Chunk.SIZE) {
+                for (z in 0 until Chunk.SIZE) {
+                    if (chunk.types[x, y, z].get() != VoxelType.None) {
+                        val visibleRef = chunk.visibleSides[x, y, z]
+                        val neighborhoodRef = chunk.neighborSides[x, y, z]
 
-                                for (side in Side.allSides) {
-                                    visibleRef[side] = !VoxelType.isVisible(neighborhoodRef[side].get()?.get())
-                                }
-
-                                visibleRef.save()
-                            }
+                        for (side in Side.allSides) {
+                            visibleRef[side] = !VoxelType.isVisible(neighborhoodRef[side].get()?.get())
                         }
+
+                        visibleRef.save()
                     }
                 }
             }
@@ -108,7 +88,7 @@ class World : Disposable {
         generator.generate(chunk)
 
         for (i in 0 until Chunk.SIZE * Chunk.SIZE) {
-            val height = generator[i]
+            val height = generator[i] * Chunk.SIZE
 
             if (height >= Chunk.SIZE) continue
 
@@ -125,25 +105,21 @@ class World : Disposable {
             chunk.dispose()
     }
 
-    internal suspend fun buildChunkNeighborhood(chunk: Chunk) {
+    internal fun buildChunkNeighborhood(chunk: Chunk) {
         if (chunk.isEmpty)
             return
 
-        coroutineScope {
-            for (x in 0 until Chunk.SIZE) {
-                launch(Dispatchers.Default) {
-                    for (y in 0 until Chunk.SIZE) {
-                        for (z in 0 until Chunk.SIZE) {
-                            if (chunk.types[x, y, z].get() != VoxelType.None) {
-                                val sidesRef = chunk.neighborSides[x, y, z]
+        for (x in 0 until Chunk.SIZE) {
+            for (y in 0 until Chunk.SIZE) {
+                for (z in 0 until Chunk.SIZE) {
+                    if (chunk.types[x, y, z].get() != VoxelType.None) {
+                        val sidesRef = chunk.neighborSides[x, y, z]
 
-                                for (side in Side.allSides) {
-                                    sidesRef[side] = getVoxelNeighbor(chunk, x, y, z, side)
-                                }
-
-                                sidesRef.save()
-                            }
+                        for (side in Side.allSides) {
+                            sidesRef[side] = getVoxelNeighbor(chunk, x, y, z, side)
                         }
+
+                        sidesRef.save()
                     }
                 }
             }

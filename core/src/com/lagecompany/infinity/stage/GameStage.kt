@@ -13,8 +13,10 @@ private const val LOG_TAG = "GameStage"
 class GameStage : Stage() {
 
     val camera = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-    val shader = ShaderProgram(Gdx.files.internal("shaders/vertex.glsl"), Gdx.files.internal("shaders/fragment.glsl"))
+    val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
     val cameraController = CameraController(camera)
+
+    private val sunPosition = Vector3(1f, 1f, 1f)
 
     override fun initialize() {
         super.initialize()
@@ -48,7 +50,9 @@ class GameStage : Stage() {
 
         cameraController.update()
         shader.begin()
-        shader.setUniformMatrix("matViewProj", camera.combined)
+        shader.setUniformMatrix("viewMatrix", camera.view)
+        shader.setUniformMatrix("projectionMatrix", camera.projection)
+        shader.setUniform4fv("sunPosition", floatArrayOf(sunPosition.x, sunPosition.y, sunPosition.z, 0.0f), 0, 4)
 
         //Render components
         super.render()

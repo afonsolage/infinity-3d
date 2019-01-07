@@ -29,7 +29,10 @@ data class SideData(val side: Side, val type: VoxelType, val floatBuffer: Mutabl
 }
 
 object ChunkMeshBuilder {
-    val attributes = arrayOf(VertexAttribute(VertexAttributes.Usage.Position, 3, "a_Position"))
+    private val attributes = arrayOf(
+            VertexAttribute(VertexAttributes.Usage.Position, 3, "aPosition"),
+            VertexAttribute(VertexAttributes.Usage.Normal, 3, "aNormal")
+    )
     val emptyMesh = Mesh(true, 0, 0, *attributes)
 
     private val data = mutableListOf<SideData>()
@@ -79,6 +82,8 @@ object ChunkMeshBuilder {
     private fun getVertices(): FloatArray {
         val result = FloatArray(floatDataCount())
 
+        //add interleaved normal on vertices data.
+
         var i = 0
         data.forEach {
             val floats = it.floatBuffer.toFloatArray()
@@ -127,10 +132,14 @@ object ChunkMeshBuilder {
                         continue
 
                     val sideRef = chunk.visibleSides[x, y, z]
-                    for (side in Side.allSides) {
-                        if (!sideRef[side]) continue
 
-                        addVoxel(side, typeRef.get(), x, y, z)
+                    if (sideRef.isNotVisible)
+                        continue
+
+                    for (side in Side.allSides) {
+                        if (sideRef[side]) {
+                            addVoxel(side, typeRef.get(), x, y, z)
+                        }
                     }
                 }
             }
