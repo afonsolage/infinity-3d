@@ -1,6 +1,8 @@
 package com.lagecompany.infinity.stage
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.InfinityGame
 import kotlin.reflect.KClass
@@ -17,10 +19,13 @@ interface StageComponent : Disposable {
 
 abstract class Stage : Disposable {
     private val renderables = mutableListOf<StageComponent>()
+    private val inputMultiplexer = InputMultiplexer()
 
     val app get() = Gdx.app as InfinityGame
 
-    open fun initialize() {}
+    open fun initialize() {
+        Gdx.input.inputProcessor = inputMultiplexer
+    }
 
     /**
      * Dispose it self and all it's children. If this method is overridden, it must call super.dispose() in
@@ -54,6 +59,14 @@ abstract class Stage : Disposable {
     fun remove(component: StageComponent) {
         renderables.remove(component)
         component.dispose()
+    }
+
+    fun addInputProcessor(inputProcessor: InputProcessor) {
+        inputMultiplexer.addProcessor(inputProcessor)
+    }
+
+    fun removeInputProcessor(inputProcessor: InputProcessor) {
+        inputMultiplexer.removeProcessor(inputProcessor)
     }
 }
 

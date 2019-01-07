@@ -3,11 +3,10 @@ package com.lagecompany.infinity.stage
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
+import com.lagecompany.infinity.components.CameraController
 import com.lagecompany.infinity.renderer.WorldRenderer
-import com.lagecompany.infinity.world.World
 
 private const val LOG_TAG = "GameStage"
 
@@ -15,9 +14,11 @@ class GameStage : Stage() {
 
     val camera = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
     val shader = ShaderProgram(Gdx.files.internal("shaders/vertex.glsl"), Gdx.files.internal("shaders/fragment.glsl"))
-    val cameraController = FirstPersonCameraController(camera)
+    val cameraController = CameraController(camera)
 
     override fun initialize() {
+        super.initialize()
+
         Gdx.app.log(LOG_TAG, "Initializing")
 
         camera.near = 0.01f
@@ -28,7 +29,7 @@ class GameStage : Stage() {
         camera.update()
 
         cameraController.setVelocity(10f)
-        Gdx.input.inputProcessor = cameraController
+        addInputProcessor(cameraController)
 
         add(WorldRenderer())
     }
@@ -48,7 +49,10 @@ class GameStage : Stage() {
         cameraController.update()
         shader.begin()
         shader.setUniformMatrix("matViewProj", camera.combined)
+
+        //Render components
         super.render()
+
         shader.end()
     }
 }
