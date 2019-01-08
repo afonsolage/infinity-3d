@@ -23,6 +23,15 @@ object Cube {
 
     val allIdxs = shortArrayOf(*frontIdxs, *rightIdxs, *backIdxs, *leftIdxs, *upIdxs, *downIdxs)
 
+    val frontNormal = floatArrayOf(0f, 0f, 1f)
+    val rightNormal = floatArrayOf(1f, 0f, 0f)
+    val backNormal = floatArrayOf(0f, 0f, -1f)
+    val leftNormal = floatArrayOf(-1f, 0f, 0f)
+    val upNormal = floatArrayOf(0f, 1f, 0f)
+    val downNormal = floatArrayOf(0f, -1f, 0f)
+
+    val normalArrays = arrayOf(frontNormal, rightNormal, backNormal, leftNormal, upNormal, downNormal)
+
     private val v0 = Vector3(0f, 0f, 1f)
     private val v1 = Vector3(1f, 0f, 1f)
     private val v2 = Vector3(1f, 1f, 1f)

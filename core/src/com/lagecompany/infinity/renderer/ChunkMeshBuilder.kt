@@ -54,8 +54,8 @@ object ChunkMeshBuilder {
 
     private val isEmpty get() = data.size == 0
 
-    private fun floatDataCount(): Int {
-        return data.sumBy { it.floatBuffer.size }
+    private fun vertexCount(): Int {
+        return data.sumBy { it.floatBuffer.size } / 3
     }
 
     fun generate(chunk: Chunk): Mesh {
@@ -80,18 +80,33 @@ object ChunkMeshBuilder {
     }
 
     private fun getVertices(): FloatArray {
-        val result = FloatArray(floatDataCount())
+        val result = FloatArray(vertexCount() * attributesSize())
 
         //add interleaved normal on vertices data.
 
         var i = 0
         data.forEach {
+            //Copy vertices data
             val floats = it.floatBuffer.toFloatArray()
-            floats.copyInto(result, i)
-            i += floats.size
-        }
 
+            //Count how many vertices we have
+            val vertexCount = floats.size / 3
+            val normalArr = Cube.normalArrays[it.side.ordinal]
+
+            var src = 0
+            repeat(vertexCount) {
+                floats.copyInto(result, i, src, src + 3) //Copy vertex data
+                i += 3
+                src += 3
+                normalArr.copyInto(result, i) //Copy normal data
+                i += normalArr.size
+            }
+        }
         return result
+    }
+
+    private fun attributesSize(): Int {
+        return attributes.sumBy { it.numComponents }
     }
 
     private fun getIndicesList(): ShortArray {
@@ -100,7 +115,7 @@ object ChunkMeshBuilder {
 
         //Each side has 4 vertex, with 3 floats each which makes 12 floats.
         //We need 6 index for each side, so need the half size.
-        val size = floatDataCount() / 2
+        val size = vertexCount() / 2
 
         /*  Vertexes are built using the counter-clockwise, we just need to follow this index pattern:
          *		     3		2   2
@@ -156,4 +171,5 @@ object ChunkMeshBuilder {
             Side.DOWN -> add(side, type, *Cube.downVertices(x, y, z))
         }
     }
+
 }
