@@ -16,7 +16,7 @@ class GameStage : Stage() {
     val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
     val cameraController = CameraController(camera)
 
-    private val sunPosition = Vector3(1f, 1f, 1f)
+    private val sunDir = Vector3(.25f, 1f, .45f)
 
     override fun initialize() {
         super.initialize()
@@ -50,9 +50,8 @@ class GameStage : Stage() {
 
         cameraController.update()
         shader.begin()
-        shader.setUniformMatrix("viewMatrix", camera.view)
-        shader.setUniformMatrix("projectionMatrix", camera.projection)
-        shader.setUniform4fv("sunPosition", floatArrayOf(sunPosition.x, sunPosition.y, sunPosition.z, 0.0f), 0, 4)
+        shader.setUniformMatrix("viewProjMatrix", camera.combined)
+        shader.setUniform4fv("sunDir", floatArrayOf(sunDir.x, sunDir.y, sunDir.z, 0.0f), 0, 4)
 
         //Render components
         super.render()

@@ -4,10 +4,9 @@
 attribute vec3 aPosition;
 attribute vec3 aNormal;
 
-uniform vec4 sunPosition;
+uniform vec4 sunDir;
 
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
+uniform mat4 viewProjMatrix;
 
 out vec3 lightingIntensity;
 
@@ -15,10 +14,10 @@ vec3 ambient = vec3(0.05, 0.05, 0.05); //Ambient color;;
 
 void main()
 {
-	vec4 eyeCoords = viewMatrix * vec4(aPosition, 1.0);
-	vec3 dir = normalize(vec3(sunPosition - eyeCoords));
+	vec3 L = normalize(sunDir.xyz);
+	vec3 N = normalize(aNormal.xyz);
 
-	lightingIntensity = (max(dot(dir, aNormal), 0.0)) + ambient;
+	lightingIntensity = abs(dot(N,L)) + ambient;
 
-	gl_Position = projectionMatrix * eyeCoords;
+	gl_Position = viewProjMatrix * vec4(aPosition, 1.0);
 }
