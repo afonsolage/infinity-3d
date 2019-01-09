@@ -9,9 +9,9 @@ class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 1
-        const val HEIGHT = 1
-        const val DEPTH = 1
+        const val WIDTH = 2
+        const val HEIGHT = 2
+        const val DEPTH = 2
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -96,7 +96,7 @@ class World : Disposable {
                 hasVoxel = true
 
             val (x, z) = NoiseGenerator.fromIndex(i)
-            for (y in 0..height.toInt()) {
+            for (y in chunk.y until height.toInt()) {
                 chunk.types[x, y, z].set(VoxelType.Grass).save()
             }
         }

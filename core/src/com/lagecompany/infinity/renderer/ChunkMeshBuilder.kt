@@ -160,7 +160,7 @@ object ChunkMeshBuilder {
 
                     for (side in Side.allSides) {
                         if (sideRef[side]) {
-                            addVoxel(side, typeRef.get(), x, y, z)
+                            addVoxel(side, typeRef.get(), chunk.x + x, chunk.y + y, chunk.z + z)
                         }
                     }
                 }

@@ -7,9 +7,9 @@ import kotlinx.coroutines.runBlocking
 
 class WorldRenderer : StageComponent {
 
-    val chunkRenderers = mutableMapOf<Int, ChunkRenderer>()
+    private val chunkRenderers = mutableMapOf<Int, ChunkRenderer>()
 
-    val world = World()
+    private val world = World()
 
     override fun initialize() {
         runBlocking {
@@ -18,7 +18,7 @@ class WorldRenderer : StageComponent {
             world.generateAllChunks()
         }
 
-        for(i in 0 until World.SIZE) {
+        for (i in 0 until World.SIZE) {
             val chunk = world[i]
 
             if (chunk.isEmpty)
@@ -27,18 +27,11 @@ class WorldRenderer : StageComponent {
             val renderer = ChunkRenderer(chunk)
             renderer.setup()
             chunkRenderers[i] = renderer
+            currentStage<GameStage>().add(renderer)
         }
     }
 
     override fun tick(delta: Float) {
-    }
-
-    override fun render() {
-        val stage = currentStage<GameStage>()
-
-        chunkRenderers.values.forEach {
-            it.render(stage.shader)
-        }
     }
 
     override fun dispose() {

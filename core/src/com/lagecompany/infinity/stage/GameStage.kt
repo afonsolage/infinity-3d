@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
-import com.badlogic.gdx.math.Vector
 import com.badlogic.gdx.math.Vector3
 import com.lagecompany.infinity.App
 import com.lagecompany.infinity.components.FlyCameraController
@@ -49,6 +48,8 @@ class GameStage : Stage() {
     override fun render() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
         Gdx.gl.glEnable(GL20.GL_BLEND)
         Gdx.gl.glEnable(GL20.GL_CULL_FACE)
@@ -61,6 +62,10 @@ class GameStage : Stage() {
 
         //Render components
         super.render()
+
+        App.isDebug {
+            super.renderDebug()
+        }
 
         shader.end()
     }

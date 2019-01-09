@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.utils.Disposable
+import com.lagecompany.infinity.App
 import com.lagecompany.infinity.InfinityGame
 import kotlin.reflect.KClass
 
@@ -11,6 +12,7 @@ interface StageComponent : Disposable {
     fun initialize() {}
     fun tick(delta: Float) {}
     fun render() {}
+    fun renderDebug() {}
 
     fun <T> currentStage(): T {
         return StageManager.currentStage as T ?: throw ClassCastException()
@@ -49,6 +51,17 @@ abstract class Stage : Disposable {
      */
     open fun render() {
         renderables.forEach { it.render() }
+    }
+
+    /**
+     * Renders debug it self and all it's children. If this method is overridden, it must call super.renderDebug()
+     * in order to render debug any children or render debug all children manually. This method will be called only
+     * if the flag App.DEBUG is set to true
+     */
+    open fun renderDebug() {
+        App.isDebug {
+            renderables.forEach { it.renderDebug() }
+        }
     }
 
     fun add(component: StageComponent) {

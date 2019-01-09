@@ -10,7 +10,7 @@ uniform mat4 viewProjMatrix;
 
 out vec3 lightingIntensity;
 
-vec3 ambient = vec3(0.05, 0.05, 0.05); //Ambient color;;
+vec3 ambient = vec3(0.5, 0.5, 0.5); //Ambient color;;
 
 void main()
 {
