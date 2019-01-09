@@ -75,4 +75,10 @@ class GameStage : Stage() {
     override fun getCamera(): Camera {
         return camera
     }
+
+    override fun resizeViewport(width: Int, height: Int) {
+        camera.viewportWidth = width.toFloat()
+        camera.viewportHeight = height.toFloat()
+        camera.update(true)
+    }
 }

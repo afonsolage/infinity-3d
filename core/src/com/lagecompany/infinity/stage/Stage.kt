@@ -88,6 +88,8 @@ abstract class Stage : Disposable {
     fun removeInputProcessor(inputProcessor: InputProcessor) {
         inputMultiplexer.removeProcessor(inputProcessor)
     }
+
+    open fun resizeViewport(width: Int, height: Int) { }
 }
 
 object StageManager : Disposable {

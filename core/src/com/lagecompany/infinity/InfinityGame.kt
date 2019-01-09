@@ -21,4 +21,8 @@ class InfinityGame : ApplicationAdapter() {
     override fun dispose() {
         StageManager.dispose()
     }
+
+    override fun resize(width: Int, height: Int) {
+        StageManager.currentStage.resizeViewport(width, height)
+    }
 }
