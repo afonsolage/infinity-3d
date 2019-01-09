@@ -9,9 +9,9 @@ class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 16
-        const val HEIGHT = 16
-        const val DEPTH = 16
+        const val WIDTH = 5
+        const val HEIGHT = 5
+        const val DEPTH = 5
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
