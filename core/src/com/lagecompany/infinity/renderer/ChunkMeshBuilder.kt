@@ -71,6 +71,14 @@ object ChunkMeshBuilder {
         val indices = getIndicesList()
         val vertices = getVertices()
 
+        assert(vertices.size == vertexCount() * attributesSize()) {
+            "${vertices.size} != ${vertexCount()} * ${attributesSize()} (${vertexCount() * attributesSize()})"
+        }
+
+        assert(indices.size == (vertexCount() * 1.5f).toInt()) {
+            "${indices.size} != ${vertexCount()} * 1.5f} (${(vertexCount() * 1.5f).toInt()})"
+        }
+
         val mesh = Mesh(true, vertices.size, indices.size, *attributes)
 
         mesh.setIndices(indices)
@@ -113,9 +121,8 @@ object ChunkMeshBuilder {
         if (isEmpty)
             return emptyIndexList
 
-        //Each side has 4 vertex, with 3 floats each which makes 12 floats.
-        //We need 6 index for each side, so need the half size.
-        val size = vertexCount() / 2
+        //Each cube as 4 vertex and 6 index so this is a 1.5 ratio between vertex and index.
+        val size = (vertexCount() * 1.5f).toInt()
 
         /*  Vertexes are built using the counter-clockwise, we just need to follow this index pattern:
          *		     3		2   2
