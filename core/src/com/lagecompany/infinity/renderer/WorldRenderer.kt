@@ -35,6 +35,7 @@ class WorldRenderer : StageComponent {
     }
 
     override fun dispose() {
+
         world.dispose()
     }
 

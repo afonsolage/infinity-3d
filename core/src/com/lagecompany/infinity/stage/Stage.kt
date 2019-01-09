@@ -3,8 +3,9 @@ package com.lagecompany.infinity.stage
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
+import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.App
+import com.lagecompany.infinity.Debug
 import com.lagecompany.infinity.InfinityGame
 import kotlin.reflect.KClass
 
@@ -17,11 +18,17 @@ interface StageComponent : Disposable {
     fun <T> currentStage(): T {
         return StageManager.currentStage as T ?: throw ClassCastException()
     }
+
+    fun currentStage(): Stage {
+        return StageManager.currentStage
+    }
 }
 
 abstract class Stage : Disposable {
     private val renderables = mutableListOf<StageComponent>()
     private val inputMultiplexer = InputMultiplexer()
+
+    abstract fun getCamera(): Camera
 
     val app get() = Gdx.app as InfinityGame
 
@@ -56,10 +63,10 @@ abstract class Stage : Disposable {
     /**
      * Renders debug it self and all it's children. If this method is overridden, it must call super.renderDebug()
      * in order to render debug any children or render debug all children manually. This method will be called only
-     * if the flag App.DEBUG is set to true
+     * if the flag Debug.DEBUG is set to true
      */
     open fun renderDebug() {
-        App.isDebug {
+        Debug.ifEnabled {
             renderables.forEach { it.renderDebug() }
         }
     }
@@ -85,7 +92,11 @@ abstract class Stage : Disposable {
 
 object StageManager : Disposable {
 
-    private val emptyStage = object : Stage() {}
+    private val emptyStage = object : Stage() {
+        override fun getCamera(): Camera {
+            throw UnsupportedOperationException()
+        }
+    }
 
     var currentStage: Stage = emptyStage
         private set

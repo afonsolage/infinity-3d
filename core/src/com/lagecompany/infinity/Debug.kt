@@ -1,10 +1,12 @@
 package com.lagecompany.infinity
 
-
-object App {
+object Debug {
     private const val DEBUG = true
 
-    fun isDebug(lambda: () -> Unit) {
+    var chunkBounds = false
+    var wireframe = false
+
+    fun ifEnabled(lambda: () -> Unit) {
         if (DEBUG) {
             lambda()
         }

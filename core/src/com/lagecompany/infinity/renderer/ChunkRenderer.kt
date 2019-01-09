@@ -1,27 +1,31 @@
 package com.lagecompany.infinity.renderer
 
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
-import com.lagecompany.infinity.App
+import com.lagecompany.infinity.Debug
 import com.lagecompany.infinity.stage.GameStage
 import com.lagecompany.infinity.stage.StageComponent
 import com.lagecompany.infinity.stage.StageManager
 import com.lagecompany.infinity.world.Chunk
 
-class ChunkRenderer(private val chunk: Chunk) : StageComponent, InputAdapter() {
+private const val DEFAULT_PRIMITIVE = GL20.GL_TRIANGLES
+private const val WIRTEFRAME_PRIMITIVE = GL20.GL_LINES
+
+class ChunkRenderer(private val chunk: Chunk) : StageComponent {
 
     private var mesh = ChunkMeshBuilder.emptyMesh
 
-    private var primitiveType = GL20.GL_TRIANGLES
+    private var primitiveType = DEFAULT_PRIMITIVE
     private val shapeRenderer = ShapeRenderer()
 
     fun setup() {
         mesh = ChunkMeshBuilder.generate(chunk)
-        App.isDebug {
-            StageManager.currentStage.addInputProcessor(this)
+    }
+
+    override fun tick(delta: Float) {
+        Debug.ifEnabled {
+            primitiveType = if (Debug.wireframe) WIRTEFRAME_PRIMITIVE else DEFAULT_PRIMITIVE
         }
     }
 
@@ -30,6 +34,12 @@ class ChunkRenderer(private val chunk: Chunk) : StageComponent, InputAdapter() {
     }
 
     override fun renderDebug() {
+        if (!Debug.chunkBounds)
+            return
+
+        if (currentStage<GameStage>().camera.position.dst(chunk.x.toFloat(), chunk.y.toFloat(), chunk.z.toFloat()) > 100)
+            return
+
         val currentStage = StageManager.currentStage
         if (currentStage is GameStage) {
             val cam = currentStage.camera
@@ -68,14 +78,5 @@ class ChunkRenderer(private val chunk: Chunk) : StageComponent, InputAdapter() {
 
     override fun dispose() {
         mesh.dispose()
-    }
-
-    override fun keyUp(keycode: Int): Boolean {
-        App.isDebug {
-            when (keycode) {
-                Input.Keys.TAB -> primitiveType = if (primitiveType == GL20.GL_TRIANGLES) GL20.GL_LINE_STRIP else GL20.GL_TRIANGLES
-            }
-        }
-        return false
     }
 }

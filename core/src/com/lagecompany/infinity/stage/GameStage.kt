@@ -1,11 +1,13 @@
 package com.lagecompany.infinity.stage
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
-import com.lagecompany.infinity.App
+import com.lagecompany.infinity.Debug
+import com.lagecompany.infinity.components.DebugController
 import com.lagecompany.infinity.components.FlyCameraController
 import com.lagecompany.infinity.components.Gizmos
 import com.lagecompany.infinity.renderer.WorldRenderer
@@ -36,8 +38,9 @@ class GameStage : Stage() {
 
         add(WorldRenderer())
 
-        App.isDebug {
+        Debug.ifEnabled {
             add(Gizmos())
+            add(DebugController())
         }
     }
 
@@ -48,12 +51,9 @@ class GameStage : Stage() {
     override fun render() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT or GL20.GL_DEPTH_BUFFER_BIT)
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
         Gdx.gl.glEnable(GL20.GL_BLEND)
-        Gdx.gl.glEnable(GL20.GL_CULL_FACE)
-        Gdx.gl.glCullFace(GL20.GL_BACK)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST)
 
         cameraController.update()
         shader.begin()
@@ -63,10 +63,14 @@ class GameStage : Stage() {
         //Render components
         super.render()
 
-        App.isDebug {
+        Debug.ifEnabled {
             super.renderDebug()
         }
 
         shader.end()
+    }
+
+    override fun getCamera(): Camera {
+        return camera
     }
 }
