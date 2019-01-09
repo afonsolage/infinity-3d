@@ -1,7 +1,6 @@
 package com.lagecompany.infinity.world
 
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.world.buffer.VoxelNeighborSidesBuffer
 import com.lagecompany.infinity.world.buffer.VoxelNeighborTypeBuffer
 import com.lagecompany.infinity.world.buffer.VoxelSideBuffer
 import com.lagecompany.infinity.world.buffer.VoxelTypeBuffer
@@ -34,4 +33,25 @@ class Chunk(val index: Int) : Disposable {
     inline fun isOnBounds(x: Int, y: Int, z: Int): Boolean {
         return x in 0 until Chunk.SIZE && y in 0 until Chunk.SIZE && z in 0 until Chunk.SIZE
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Chunk
+
+        if (index != other.index) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return index
+    }
+
+    override fun toString(): String {
+        return "Chunk($x,$y,$z)"
+    }
+
+
 }
