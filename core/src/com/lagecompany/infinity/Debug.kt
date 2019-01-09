@@ -5,6 +5,8 @@ object Debug {
 
     var chunkBounds = false
     var wireframe = false
+    var disableBackfaceCulling = false
+    var clearColorRed = false
 
     fun ifEnabled(lambda: () -> Unit) {
         if (DEBUG) {

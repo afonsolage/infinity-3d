@@ -6,7 +6,9 @@ import com.lagecompany.infinity.Debug
 import com.lagecompany.infinity.stage.StageComponent
 
 private const val TOGGLE_WIREFRAME = Input.Keys.TAB
-private const val TOGGLE_CHUNK_BOUNDS = Input.Keys.F5
+private const val TOGGLE_CHUNK_BOUNDS = Input.Keys.NUMPAD_1
+private const val TOGGLE_BACKFACE_CULLING = Input.Keys.NUMPAD_2
+private const val TOGGLE_CLEAR_COLOR_RED = Input.Keys.NUMPAD_3
 
 class DebugController : StageComponent, InputAdapter() {
 
@@ -27,6 +29,8 @@ class DebugController : StageComponent, InputAdapter() {
             when (keycode) {
                 TOGGLE_WIREFRAME -> Debug.wireframe = Debug.wireframe.not()
                 TOGGLE_CHUNK_BOUNDS -> Debug.chunkBounds = Debug.chunkBounds.not()
+                TOGGLE_BACKFACE_CULLING -> Debug.disableBackfaceCulling = Debug.disableBackfaceCulling.not()
+                TOGGLE_CLEAR_COLOR_RED -> Debug.clearColorRed = Debug.clearColorRed.not()
             }
         }
         return false
