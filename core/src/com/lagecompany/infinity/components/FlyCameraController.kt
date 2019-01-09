@@ -7,13 +7,13 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.Vector3
 
 
-class CameraController(private val camera: Camera) : InputAdapter() {
+class FlyCameraController(private val camera: Camera) : InputAdapter() {
     private val strafeLeft = Input.Keys.A
     private val strafeRight = Input.Keys.D
     private val forward = Input.Keys.W
     private val backward = Input.Keys.S
-    private val up = Input.Keys.Q
-    private val down = Input.Keys.E
+    private val up = Input.Keys.SPACE
+    private val down = Input.Keys.CONTROL_LEFT
 
     private val listenKeys = intArrayOf(forward, backward, strafeLeft, strafeRight, up, down)
 
@@ -21,6 +21,8 @@ class CameraController(private val camera: Camera) : InputAdapter() {
     private var degreesPerPixel = 0.5f
 
     private val tmp = Vector3()
+    private val tmp2 = Vector3()
+    private val tmp3 = Vector3()
 
     private var moveForward = false
     private var moveBackward = false
@@ -57,17 +59,28 @@ class CameraController(private val camera: Camera) : InputAdapter() {
         this.velocity = velocity
     }
 
-    fun setDegreesPerPixel(degreesPerPixel: Float) {
-        this.degreesPerPixel = degreesPerPixel
+    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        Gdx.input.isCursorCatched = true
+        return true
+    }
+
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        Gdx.input.isCursorCatched = false
+        return true
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
         val deltaX = -Gdx.input.deltaX * degreesPerPixel
         val deltaY = -Gdx.input.deltaY * degreesPerPixel
         camera.direction.rotate(camera.up, deltaX)
-        tmp.set(camera.direction).crs(camera.up).nor()
-        camera.direction.rotate(tmp, deltaY)
-        // camera.up.rotate(tmp, deltaY);
+
+        val oldPitchAxis = tmp.set(camera.direction).crs(camera.up).nor()
+        val newDirection = tmp2.set(camera.direction).rotate(tmp, deltaY)
+        val newPitchAxis = tmp3.set(tmp2).crs(camera.up)
+
+        if (!newPitchAxis.hasOppositeDirection(oldPitchAxis))
+            camera.direction.set(newDirection)
+
         return true
     }
 

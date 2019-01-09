@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
 import com.lagecompany.infinity.App
-import com.lagecompany.infinity.components.CameraController
+import com.lagecompany.infinity.components.FlyCameraController
 import com.lagecompany.infinity.components.Gizmos
 import com.lagecompany.infinity.renderer.WorldRenderer
 
@@ -16,7 +16,7 @@ class GameStage : Stage() {
 
     val camera = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
     val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
-    val cameraController = CameraController(camera)
+    val cameraController = FlyCameraController(camera)
 
     private val sunDir = Vector3(.25f, 1f, .45f)
 
