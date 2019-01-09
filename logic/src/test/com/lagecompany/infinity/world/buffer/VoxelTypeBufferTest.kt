@@ -24,8 +24,8 @@ class VoxelTypeBufferTest {
     @Test
     fun get() {
         Assertions.assertDoesNotThrow { buffer[0] }
-        buffer[1].set(VoxelType.Dirt).save()
-        Assertions.assertEquals(VoxelType.Dirt, buffer[1].get())
+        buffer[1].set(VoxelType.DIRT).save()
+        Assertions.assertEquals(VoxelType.DIRT, buffer[1].get())
     }
 
     @Test
@@ -38,7 +38,7 @@ class VoxelTypeBufferTest {
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, Chunk.SIZE] }
 
         Assertions.assertDoesNotThrow { buffer[0, 1, 0] }
-        buffer[0, 1, 0].set(VoxelType.Dirt).save()
-        Assertions.assertEquals(VoxelType.Dirt, buffer[0, 1, 0].get())
+        buffer[0, 1, 0].set(VoxelType.DIRT).save()
+        Assertions.assertEquals(VoxelType.DIRT, buffer[0, 1, 0].get())
     }
 }

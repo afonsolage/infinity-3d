@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
-import com.lagecompany.infinity.Debug
+import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.changeDirection
-import com.lagecompany.infinity.components.DebugController
-import com.lagecompany.infinity.components.FlyCameraController
-import com.lagecompany.infinity.components.Gizmos
-import com.lagecompany.infinity.renderer.WorldRenderer
+import com.lagecompany.infinity.game.components.DebugController
+import com.lagecompany.infinity.game.components.FlyCameraController
+import com.lagecompany.infinity.game.components.Gizmos
+import com.lagecompany.infinity.game.renderer.WorldRenderer
 
 private const val LOG_TAG = "GameStage"
 

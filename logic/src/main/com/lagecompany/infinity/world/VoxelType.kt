@@ -1,16 +1,17 @@
 package com.lagecompany.infinity.world
 
 enum class VoxelType {
-    None,
+    NONE,
 
-    Grass,
-    Dirt,
-    Rock
+    GRASS,
+    DIRT,
+    ROCK
 
     ;
 
     companion object {
-        private val types = VoxelType.values()
+        val types = VoxelType.values()
+        val metaTypes = arrayOf(NONE)
 
         fun get(code: Int): VoxelType {
             assert(code in 0 until types.size) { "Failed to getValue VoxelType" }
@@ -18,7 +19,7 @@ enum class VoxelType {
         }
 
         fun isVisible(type: VoxelType?): Boolean {
-            return type != null && type != None
+            return type != null && type != NONE
         }
     }
 }

@@ -28,22 +28,22 @@ internal class VoxNeighborTypeRefTest {
         buf.alloc()
 
         val ref = buf[0, 0, 0]
-        ref.set(VoxelType.Grass).save()
+        ref.set(VoxelType.GRASS).save()
 
         val ref2 = buf[0, 0, 1]
-        ref2.set(VoxelType.Dirt).save()
+        ref2.set(VoxelType.DIRT).save()
 
         val ref3 = buf[0, 0, 2]
-        ref3.set(VoxelType.Rock).save()
+        ref3.set(VoxelType.ROCK).save()
 
         val ref4 = buf[0, 0, 3]
-        ref4.set(VoxelType.None).save()
+        ref4.set(VoxelType.NONE).save()
 
         val ref5 = buf[0, 0, 4]
-        ref5.set(VoxelType.Grass).save()
+        ref5.set(VoxelType.GRASS).save()
 
         val ref6 = buf[0, 0, 5]
-        ref6.set(VoxelType.Dirt).save()
+        ref6.set(VoxelType.DIRT).save()
 
         Assertions.assertThrows(AssertionError::class.java) { buffer[-1] }
         Assertions.assertThrows(AssertionError::class.java) { buffer[Chunk.BUFFER_SIZE] }
@@ -55,7 +55,7 @@ internal class VoxNeighborTypeRefTest {
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, Chunk.SIZE] }
 
         buffer[0, 0, 10].set(Side.LEFT, ref).save()
-        Assertions.assertEquals(VoxelType.Grass, buffer[0, 0, 10][Side.LEFT].get()?.get())
+        Assertions.assertEquals(VoxelType.GRASS, buffer[0, 0, 10][Side.LEFT].get()?.get())
 
         buffer[0, 0, Chunk.SIZE - 1].set(Side.LEFT, null).save()
         Assertions.assertEquals(null, buffer[Chunk.SIZE - 1][Side.LEFT].get()?.get())
@@ -69,11 +69,11 @@ internal class VoxNeighborTypeRefTest {
                 .set(Side.DOWN, ref6)
                 .save()
 
-        Assertions.assertEquals(VoxelType.Grass, buffer[Chunk.SIZE][Side.FRONT].get()?.get())
-        Assertions.assertEquals(VoxelType.Dirt, buffer[Chunk.SIZE][Side.RIGHT].get()?.get())
-        Assertions.assertEquals(VoxelType.Rock, buffer[Chunk.SIZE][Side.BACK].get()?.get())
-        Assertions.assertEquals(VoxelType.None, buffer[Chunk.SIZE][Side.LEFT].get()?.get())
-        Assertions.assertEquals(VoxelType.Grass, buffer[Chunk.SIZE][Side.UP].get()?.get())
-        Assertions.assertEquals(VoxelType.Dirt, buffer[Chunk.SIZE][Side.DOWN].get()?.get())
+        Assertions.assertEquals(VoxelType.GRASS, buffer[Chunk.SIZE][Side.FRONT].get()?.get())
+        Assertions.assertEquals(VoxelType.DIRT, buffer[Chunk.SIZE][Side.RIGHT].get()?.get())
+        Assertions.assertEquals(VoxelType.ROCK, buffer[Chunk.SIZE][Side.BACK].get()?.get())
+        Assertions.assertEquals(VoxelType.NONE, buffer[Chunk.SIZE][Side.LEFT].get()?.get())
+        Assertions.assertEquals(VoxelType.GRASS, buffer[Chunk.SIZE][Side.UP].get()?.get())
+        Assertions.assertEquals(VoxelType.DIRT, buffer[Chunk.SIZE][Side.DOWN].get()?.get())
     }
 }

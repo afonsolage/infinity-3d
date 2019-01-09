@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.Debug
+import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.InfinityGame
 import kotlin.reflect.KClass
 

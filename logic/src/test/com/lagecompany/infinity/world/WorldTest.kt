@@ -64,28 +64,28 @@ internal class WorldTest {
             world.allocAllChunks()
             world.generateChunk(c)
 
-            c.types[0, 1, 0].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[0, 1, 0].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
 
 
             //Let's surround a voxel to test it's visibility
-            c.types[3, 3, 3].set(VoxelType.None).save() //This one should not be visible
-            c.types[3, 3, 4].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
-            c.types[3, 3, 2].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
-            c.types[3, 4, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
-            c.types[3, 2, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
-            c.types[4, 3, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
-            c.types[2, 3, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
+            c.types[3, 3, 3].set(VoxelType.NONE).save() //This one should not be visible
+            c.types[3, 3, 4].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
+            c.types[3, 3, 2].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
+            c.types[3, 4, 3].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
+            c.types[3, 2, 3].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
+            c.types[4, 3, 3].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
+            c.types[2, 3, 3].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test
 
             world.buildChunkNeighborhood(c)
 
             world.checkVisibility(c)
         }
 
-        c.types[0, 0, 0].set(VoxelType.Grass).save()
+        c.types[0, 0, 0].set(VoxelType.GRASS).save()
         val ref = c.neighborSides[0, 1, 0][Side.DOWN].get()
 
         Assertions.assertNotNull(ref)
-        Assertions.assertEquals(VoxelType.Grass, ref!!.get())
+        Assertions.assertEquals(VoxelType.GRASS, ref!!.get())
 
         Assertions.assertTrue(c.visibleSides[3, 4, 3].isVisible) {"${c.visibleSides[3, 4, 3]} should be visible"}
         Assertions.assertTrue(c.visibleSides[3, 2, 3].isVisible)

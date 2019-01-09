@@ -52,7 +52,7 @@ class World : Disposable {
         for (x in 0 until Chunk.SIZE) {
             for (y in 0 until Chunk.SIZE) {
                 for (z in 0 until Chunk.SIZE) {
-                    if (chunk.types[x, y, z].get() != VoxelType.None) {
+                    if (chunk.types[x, y, z].get() != VoxelType.NONE) {
                         val visibleRef = chunk.visibleSides[x, y, z]
                         val neighborhoodRef = chunk.neighborSides[x, y, z]
 
@@ -97,7 +97,7 @@ class World : Disposable {
 
             val (x, z) = NoiseGenerator.fromIndex(i)
             for (y in chunk.y until height.toInt()) {
-                chunk.types[x, y, z].set(VoxelType.Grass).save()
+                chunk.types[x, y, z].set(VoxelType.GRASS).save()
             }
         }
 
@@ -112,7 +112,7 @@ class World : Disposable {
         for (x in 0 until Chunk.SIZE) {
             for (y in 0 until Chunk.SIZE) {
                 for (z in 0 until Chunk.SIZE) {
-                    if (chunk.types[x, y, z].get() != VoxelType.None) {
+                    if (chunk.types[x, y, z].get() != VoxelType.NONE) {
                         val sidesRef = chunk.neighborSides[x, y, z]
 
                         for (side in Side.allSides) {

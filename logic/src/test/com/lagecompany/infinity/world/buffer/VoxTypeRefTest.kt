@@ -26,7 +26,7 @@ internal class VoxTypeRefTest {
         val ref = buffer[0]
 
         val old = ref.get()
-        val new = ref.set(VoxelType.Dirt).save().get()
+        val new = ref.set(VoxelType.DIRT).save().get()
 
         Assertions.assertNotEquals(old, new)
     }
@@ -36,7 +36,7 @@ internal class VoxTypeRefTest {
         val ref = buffer[0]
 
         var old = ref.get()
-        var new = ref.set(VoxelType.Dirt).refresh().get()
+        var new = ref.set(VoxelType.DIRT).refresh().get()
 
         Assertions.assertEquals(old, new)
     }
@@ -45,7 +45,7 @@ internal class VoxTypeRefTest {
     fun clear() {
         val ref = buffer[0]
 
-        var old = ref.set(VoxelType.Rock).get()
+        var old = ref.set(VoxelType.ROCK).get()
         var new = ref.clear().get()
 
         Assertions.assertNotEquals(old, new)
@@ -62,17 +62,17 @@ internal class VoxTypeRefTest {
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, -1] }
         Assertions.assertThrows(AssertionError::class.java) { buffer[0, 0, Chunk.SIZE] }
 
-        buffer[0, 0, 10].set(VoxelType.Grass).save()
-        Assertions.assertEquals(buffer[10].get(), VoxelType.Grass)
+        buffer[0, 0, 10].set(VoxelType.GRASS).save()
+        Assertions.assertEquals(buffer[10].get(), VoxelType.GRASS)
 
-        buffer[0, 0, Chunk.SIZE - 1].set(VoxelType.Rock).save()
-        Assertions.assertEquals(buffer[Chunk.SIZE - 1].get(), VoxelType.Rock)
+        buffer[0, 0, Chunk.SIZE - 1].set(VoxelType.ROCK).save()
+        Assertions.assertEquals(buffer[Chunk.SIZE - 1].get(), VoxelType.ROCK)
 
-        buffer[0, 1, 0].set(VoxelType.Dirt).save()
-        Assertions.assertEquals(buffer[Chunk.SIZE].get(), VoxelType.Dirt)
+        buffer[0, 1, 0].set(VoxelType.DIRT).save()
+        Assertions.assertEquals(buffer[Chunk.SIZE].get(), VoxelType.DIRT)
 
-        buffer[1, 0, 0].set(VoxelType.Grass).save()
-        Assertions.assertEquals(buffer[Chunk.SIZE * Chunk.SIZE].get(), VoxelType.Grass)
+        buffer[1, 0, 0].set(VoxelType.GRASS).save()
+        Assertions.assertEquals(buffer[Chunk.SIZE * Chunk.SIZE].get(), VoxelType.GRASS)
     }
 
     @Test
@@ -80,6 +80,6 @@ internal class VoxTypeRefTest {
         val ref = buffer[0]
 
         var old = ref.get()
-        Assertions.assertNotEquals(old, ref.set(VoxelType.Grass).get())
+        Assertions.assertNotEquals(old, ref.set(VoxelType.GRASS).get())
     }
 }
