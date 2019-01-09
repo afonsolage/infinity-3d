@@ -19,7 +19,7 @@ class GameStage : Stage() {
     val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
     private val cameraController = FlyCameraController(camera)
 
-    private val sunDir = Vector3(.25f, 1f, .45f)
+    private val sunDir = Vector3(.25f, -1f, .45f)
 
     override fun initialize() {
         super.initialize()

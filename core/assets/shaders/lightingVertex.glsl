@@ -14,10 +14,10 @@ vec3 ambient = vec3(0.05, 0.05, 0.05); //Ambient color;;
 
 void main()
 {
-	vec3 L = normalize(sunDir.xyz);
+	vec3 L = normalize(-sunDir.xyz);
 	vec3 N = normalize(aNormal.xyz);
 
-	lightingIntensity = abs(dot(N,L)) + ambient;
+	lightingIntensity = max(dot(N,L), 0.0) + ambient;
 
 	gl_Position = viewProjMatrix * vec4(aPosition, 1.0);
 }
