@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.Vector3
+import com.lagecompany.infinity.Debug
 
 
 class FlyCameraController(private val camera: Camera) : InputAdapter() {
@@ -116,6 +117,7 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
             tmp.set(camera.up).nor().scl(-speed)
             camera.position.add(tmp)
         }
+
         camera.update(true)
     }
 }

@@ -10,6 +10,7 @@ import com.lagecompany.infinity.Debug
 import com.lagecompany.infinity.components.DebugController
 import com.lagecompany.infinity.components.FlyCameraController
 import com.lagecompany.infinity.components.Gizmos
+import com.lagecompany.infinity.changeDirection
 import com.lagecompany.infinity.renderer.WorldRenderer
 
 private const val LOG_TAG = "GameStage"
@@ -31,6 +32,7 @@ class GameStage : Stage() {
         camera.far = 1500f
         camera.up.set(Vector3.Y)
         camera.position.set(-20f, 10f, -20f)
+        camera.changeDirection(Vector3(0f, 0f, 0f))
         camera.update()
 
         cameraController.setVelocity(15f)
