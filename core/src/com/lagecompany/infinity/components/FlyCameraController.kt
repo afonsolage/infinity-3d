@@ -14,6 +14,7 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
     private val backward = Input.Keys.S
     private val up = Input.Keys.SPACE
     private val down = Input.Keys.CONTROL_LEFT
+    private val run = Input.Keys.SHIFT_LEFT
 
     private val listenKeys = intArrayOf(forward, backward, strafeLeft, strafeRight, up, down)
 
@@ -30,6 +31,7 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
     private var moveRight = false
     private var moveUp = false
     private var moveDown = false
+    private var shouldRun = false
 
     override fun keyDown(keycode: Int): Boolean {
         when (keycode) {
@@ -39,6 +41,7 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
             strafeLeft -> moveLeft = true
             up -> moveUp = true
             down -> moveDown = true
+            run -> shouldRun = true
         }
         return listenKeys.contains(keycode)
     }
@@ -51,6 +54,7 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
             strafeLeft -> moveLeft = false
             up -> moveUp = false
             down -> moveDown = false
+            run -> shouldRun = false
         }
         return listenKeys.contains(keycode)
     }
@@ -86,28 +90,30 @@ class FlyCameraController(private val camera: Camera) : InputAdapter() {
 
     @JvmOverloads
     fun update(deltaTime: Float = Gdx.graphics.deltaTime) {
+        val speed = velocity * (if (shouldRun) 2 else 1) * deltaTime
+
         if (moveForward) {
-            tmp.set(camera.direction).nor().scl(deltaTime * velocity)
+            tmp.set(camera.direction).nor().scl(speed)
             camera.position.add(tmp)
         }
         if (moveBackward) {
-            tmp.set(camera.direction).nor().scl(-deltaTime * velocity)
+            tmp.set(camera.direction).nor().scl(-speed)
             camera.position.add(tmp)
         }
         if (moveRight) {
-            tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity)
+            tmp.set(camera.direction).crs(camera.up).nor().scl(speed)
             camera.position.add(tmp)
         }
         if (moveLeft) {
-            tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity)
+            tmp.set(camera.direction).crs(camera.up).nor().scl(-speed)
             camera.position.add(tmp)
         }
         if (moveUp) {
-            tmp.set(camera.up).nor().scl(deltaTime * velocity)
+            tmp.set(camera.up).nor().scl(speed)
             camera.position.add(tmp)
         }
         if (moveDown) {
-            tmp.set(camera.up).nor().scl(-deltaTime * velocity)
+            tmp.set(camera.up).nor().scl(-speed)
             camera.position.add(tmp)
         }
         camera.update(true)
