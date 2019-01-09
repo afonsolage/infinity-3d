@@ -68,7 +68,7 @@ internal class WorldTest {
 
 
             //Let's surround a voxel to test it's visibility
-            c.types[3, 3, 3].set(VoxelType.Grass).save() //This one should not be visible
+            c.types[3, 3, 3].set(VoxelType.None).save() //This one should not be visible
             c.types[3, 3, 4].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
             c.types[3, 3, 2].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
             c.types[3, 4, 3].set(VoxelType.Grass).save() //Set this one as grass so we can use it to test
@@ -87,11 +87,7 @@ internal class WorldTest {
         Assertions.assertNotNull(ref)
         Assertions.assertEquals(VoxelType.Grass, ref!!.get())
 
-        for (side in Side.allSides) {
-            Assertions.assertTrue(VoxelType.isVisible(c.neighborSides[3, 3, 3][side].get()?.get()))
-        }
-
-        Assertions.assertTrue(c.visibleSides[3, 4, 3].isVisible)
+        Assertions.assertTrue(c.visibleSides[3, 4, 3].isVisible) {"${c.visibleSides[3, 4, 3]} should be visible"}
         Assertions.assertTrue(c.visibleSides[3, 2, 3].isVisible)
         Assertions.assertTrue(c.visibleSides[4, 3, 3].isVisible)
         Assertions.assertTrue(c.visibleSides[2, 3, 3].isVisible)
