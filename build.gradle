@@ -60,7 +60,6 @@ project(":desktop") {
 project(":core") {
     apply plugin: "kotlin"
 
-
     dependencies {
         compile project(":logic")
     }
@@ -69,13 +68,14 @@ project(":core") {
 project(":logic") {
     apply plugin: "kotlin"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
         compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+"
+        compile "io.github.libktx:ktx-math:1.9.+"
+
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.2.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.2.0'

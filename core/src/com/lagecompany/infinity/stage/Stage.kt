@@ -8,9 +8,9 @@ import com.lagecompany.infinity.InfinityGame
 import kotlin.reflect.KClass
 
 interface StageComponent : Disposable {
-    fun initialize()
-    fun tick(delta: Float)
-    fun render()
+    fun initialize() {}
+    fun tick(delta: Float) {}
+    fun render() {}
 
     fun <T> currentStage(): T {
         return StageManager.currentStage as T ?: throw ClassCastException()

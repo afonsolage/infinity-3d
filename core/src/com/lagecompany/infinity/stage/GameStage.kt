@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
+import com.lagecompany.infinity.App
 import com.lagecompany.infinity.components.CameraController
+import com.lagecompany.infinity.components.Gizmos
 import com.lagecompany.infinity.renderer.WorldRenderer
 
 private const val LOG_TAG = "GameStage"
@@ -34,6 +36,10 @@ class GameStage : Stage() {
         addInputProcessor(cameraController)
 
         add(WorldRenderer())
+
+        App.isDebug {
+            add(Gizmos())
+        }
     }
 
     override fun dispose() {
