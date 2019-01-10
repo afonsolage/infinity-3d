@@ -30,8 +30,11 @@ data class SideData(val side: Side, val type: VoxelType, val floatBuffer: Mutabl
 
 object ChunkMeshBuilder {
     private val attributes = arrayOf(
-            VertexAttribute(VertexAttributes.Usage.Position, 3, "aPosition"),
-            VertexAttribute(VertexAttributes.Usage.Normal, 3, "aNormal")
+            VertexAttribute(VertexAttributes.Usage.Position, 3, "position")
+            , VertexAttribute(VertexAttributes.Usage.Normal, 3, "normal")
+            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "texUV")
+            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "tileUV")
+
     )
     val emptyMesh = Mesh(true, 0, 0, *attributes)
 
@@ -103,11 +106,16 @@ object ChunkMeshBuilder {
 
             var src = 0
             repeat(vertexCount) {
-                floats.copyInto(result, i, src, src + 3) //Copy vertex data
+                //Copy vertex data
+                floats.copyInto(result, i, src, src + 3)
                 i += 3
                 src += 3
-                normalArr.copyInto(result, i) //Copy normal data
+
+                //Copy normal data
+                normalArr.copyInto(result, i)
                 i += normalArr.size
+
+                //Copy texUV
             }
         }
         return result

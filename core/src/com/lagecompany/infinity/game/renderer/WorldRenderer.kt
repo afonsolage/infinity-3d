@@ -3,12 +3,15 @@ package com.lagecompany.infinity.game.renderer
 import com.badlogic.gdx.graphics.Texture
 import com.lagecompany.infinity.game.BlocksTextureLoader
 import com.lagecompany.infinity.stage.GameStage
-import com.lagecompany.infinity.stage.StageComponent
+import com.lagecompany.infinity.stage.StageNode
+import com.lagecompany.infinity.stage.StageObject
 import com.lagecompany.infinity.world.World
 
-class WorldRenderer : StageComponent {
+class WorldRenderer : StageNode {
+    override val children: MutableCollection<StageObject>
+        get() = chunkMap.values
 
-    private val chunkRenderers = mutableMapOf<Int, ChunkRenderer>()
+    private val chunkMap = mutableMapOf<Int, StageObject>()
 
     private val world = World()
     private lateinit var atlas: Texture
@@ -26,17 +29,23 @@ class WorldRenderer : StageComponent {
 
             val renderer = ChunkRenderer(chunk)
             renderer.setup()
-            chunkRenderers[i] = renderer
+            chunkMap[i] = renderer
             currentStage<GameStage>().add(renderer)
         }
-    }
 
-    override fun tick(delta: Float) {
+        super.initialize()
     }
 
     override fun dispose() {
+        super.dispose()
+
         world.dispose()
         atlas.dispose()
     }
 
+    override fun render() {
+        //TODO: Shader Programa
+
+        super.render()
+    }
 }

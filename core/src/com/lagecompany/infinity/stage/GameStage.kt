@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 import com.badlogic.gdx.math.Vector3
-import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.changeDirection
+import com.lagecompany.infinity.game.BlocksTextureLoader
+import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.game.components.DebugController
 import com.lagecompany.infinity.game.components.FlyCameraController
 import com.lagecompany.infinity.game.components.Gizmos
@@ -21,7 +22,7 @@ class GameStage : Stage() {
     val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
     private val cameraController = FlyCameraController(camera)
 
-    private val sunDir = Vector3(.25f, -1f, .45f)
+    private val sunDir = Vector3(.25f, -1f, .45f).nor()
 
     override fun initialize() {
         super.initialize()
@@ -72,7 +73,13 @@ class GameStage : Stage() {
         cameraController.update()
         shader.begin()
         shader.setUniformMatrix("viewProjMatrix", camera.combined)
+
+        assert(sunDir.isUnit) { "sun direction must be normalized (sunDir.isUnit = ${sunDir.isUnit})" }
+
         shader.setUniform4fv("sunDir", floatArrayOf(sunDir.x, sunDir.y, sunDir.z, 0.0f), 0, 4)
+        shader.setUniformf("tileSize", BlocksTextureLoader.SIZE.toFloat())
+
+        shader.setUniformi("textureMap", 0)
 
         //Render components
         super.render()

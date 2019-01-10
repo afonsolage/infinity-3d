@@ -3,14 +3,14 @@ package com.lagecompany.infinity.game.components
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import com.lagecompany.infinity.game.Debug
-import com.lagecompany.infinity.stage.StageComponent
+import com.lagecompany.infinity.stage.StageObject
 
 private const val TOGGLE_WIREFRAME = Input.Keys.TAB
 private const val TOGGLE_CHUNK_BOUNDS = Input.Keys.NUMPAD_1
 private const val TOGGLE_BACKFACE_CULLING = Input.Keys.NUMPAD_2
 private const val TOGGLE_CLEAR_COLOR_RED = Input.Keys.NUMPAD_3
 
-class DebugController : StageComponent, InputAdapter() {
+class DebugController : StageObject, InputAdapter() {
 
     override fun initialize() {
         Debug.ifEnabled {

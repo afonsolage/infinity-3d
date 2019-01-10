@@ -4,11 +4,12 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import com.lagecompany.infinity.stage.GameStage
-import com.lagecompany.infinity.stage.StageComponent
+import com.lagecompany.infinity.stage.StageNode
+import com.lagecompany.infinity.stage.StageObject
 
 private const val LENGTH = 100000f
 
-class Gizmos : StageComponent {
+class Gizmos : StageObject {
 
     private val shapeRenderer = ShapeRenderer()
 

@@ -5,16 +5,14 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.InfinityGame
+import com.lagecompany.infinity.game.Debug
 import kotlin.reflect.KClass
 
-interface StageComponent : Disposable {
-    fun initialize() {}
-    fun tick(delta: Float) {}
-    fun render() {}
-    fun renderDebug() {}
-
+/**
+ * A simple object that has the ability cyclic life-time: initialize, update it's internal state, render and dispose when done.
+ */
+interface StageObject : Disposable {
     fun <T> currentStage(): T {
         return StageManager.currentStage as T ?: throw ClassCastException()
     }
@@ -22,18 +20,47 @@ interface StageComponent : Disposable {
     fun currentStage(): Stage {
         return StageManager.currentStage
     }
+
+    /**
+     * Initialize it self.
+     */
+    fun initialize() {}
+
+    /**
+     * Dispose it self.
+     */
+    override fun dispose() {}
+
+    /**
+     * Updates it's internal state.
+     */
+    fun tick(delta: Float) {}
+
+    /**
+     * Renders it self.
+     */
+    fun render() {}
+
+    /**
+     * Renders debug it self. This method will be called only
+     * if the flag Debug.DEBUG is set to true
+     */
+    fun renderDebug() {}
 }
 
-abstract class Stage : Disposable {
-    private val renderables = mutableListOf<StageComponent>()
-    private val inputMultiplexer = InputMultiplexer()
+/**
+ * A node that has the ability cyclic life-time: initialize, update it's internal state, render and dispose when done. It also
+ * has children that do the same.
+ */
+interface StageNode : StageObject {
+    val children: MutableCollection<StageObject>
 
-    abstract fun getCamera(): Camera
-
-    val app get() = Gdx.app as InfinityGame
-
-    open fun initialize() {
-        Gdx.input.inputProcessor = inputMultiplexer
+    /**
+     * Initialize it self and all it's children. If this method is overridden, it must call super.initialize() in
+     * order to initialize any children or initialize all children manually
+     */
+    override fun initialize() {
+        children.forEach { it.initialize() }
     }
 
     /**
@@ -41,23 +68,23 @@ abstract class Stage : Disposable {
      * order to dispose any children or dispose all children manually
      */
     override fun dispose() {
-        renderables.forEach { it.dispose() }
+        children.forEach { it.dispose() }
     }
 
     /**
      * Updates it's internal state and all it's children. If this method is overridden, it must call super.tick(Float) in
      * order to update any children or update all children manually
      */
-    fun tick(delta: Float) {
-        renderables.forEach { it.tick(delta) }
+    override fun tick(delta: Float) {
+        children.forEach { it.tick(delta) }
     }
 
     /**
      * Renders it self and all it's children. If this method is overridden, it must call super.render() in order to render
      * any children or render all children manually
      */
-    open fun render() {
-        renderables.forEach { it.render() }
+    override fun render() {
+        children.forEach { it.render() }
     }
 
     /**
@@ -65,20 +92,38 @@ abstract class Stage : Disposable {
      * in order to render debug any children or render debug all children manually. This method will be called only
      * if the flag Debug.DEBUG is set to true
      */
-    open fun renderDebug() {
+    override fun renderDebug() {
         Debug.ifEnabled {
-            renderables.forEach { it.renderDebug() }
+            children.forEach { it.renderDebug() }
         }
     }
 
-    fun add(component: StageComponent) {
-        renderables.add(component)
-        component.initialize()
+    fun add(node: StageObject) {
+        assert(node != this) { "Can't add your self" }
+        children.add(node)
+        node.initialize()
     }
 
-    fun remove(component: StageComponent) {
-        renderables.remove(component)
-        component.dispose()
+    fun remove(node: StageObject) {
+        children.remove(node)
+        node.dispose()
+    }
+}
+
+abstract class Stage : StageNode {
+    private val _children = mutableListOf<StageObject>()
+    override val children: MutableList<StageObject>
+        get() = _children
+
+    private val inputMultiplexer = InputMultiplexer()
+
+    abstract fun getCamera(): Camera
+
+    val app get() = Gdx.app as InfinityGame
+
+    override fun initialize() {
+        Gdx.input.inputProcessor = inputMultiplexer
+        super.initialize()
     }
 
     fun addInputProcessor(inputProcessor: InputProcessor) {
@@ -89,11 +134,10 @@ abstract class Stage : Disposable {
         inputMultiplexer.removeProcessor(inputProcessor)
     }
 
-    open fun resizeViewport(width: Int, height: Int) { }
+    open fun resizeViewport(width: Int, height: Int) {}
 }
 
 object StageManager : Disposable {
-
     private val emptyStage = object : Stage() {
         override fun getCamera(): Camera {
             throw UnsupportedOperationException()

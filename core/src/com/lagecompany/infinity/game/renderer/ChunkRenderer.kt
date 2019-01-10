@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 import com.lagecompany.infinity.game.Debug
 import com.lagecompany.infinity.stage.GameStage
-import com.lagecompany.infinity.stage.StageComponent
 import com.lagecompany.infinity.stage.StageManager
+import com.lagecompany.infinity.stage.StageObject
 import com.lagecompany.infinity.world.Chunk
 
 private const val DEFAULT_PRIMITIVE = GL20.GL_TRIANGLES
-private const val WIRTEFRAME_PRIMITIVE = GL20.GL_LINES
+private const val WIREFRAME_PRIMITIVE = GL20.GL_LINES
 
-class ChunkRenderer(private val chunk: Chunk) : StageComponent {
+class ChunkRenderer(private val chunk: Chunk) : StageObject {
 
     private var mesh = ChunkMeshBuilder.emptyMesh
 
@@ -25,7 +25,7 @@ class ChunkRenderer(private val chunk: Chunk) : StageComponent {
 
     override fun tick(delta: Float) {
         Debug.ifEnabled {
-            primitiveType = if (Debug.wireframe) WIRTEFRAME_PRIMITIVE else DEFAULT_PRIMITIVE
+            primitiveType = if (Debug.wireframe) WIREFRAME_PRIMITIVE else DEFAULT_PRIMITIVE
         }
     }
 

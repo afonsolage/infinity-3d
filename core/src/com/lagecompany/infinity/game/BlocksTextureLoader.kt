@@ -2,18 +2,17 @@ package com.lagecompany.infinity.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.PixmapIO
 import com.badlogic.gdx.graphics.Texture
 import com.lagecompany.infinity.world.VoxelType
 import java.io.FileNotFoundException
 import kotlin.math.sqrt
 
-private const val IMG_EXT = "png"
-private const val SIZE = 16
 
 data class BlockImage(val type: VoxelType, val pixmap: Pixmap)
 
 object BlocksTextureLoader {
+    private const val IMG_EXT = "png"
+    const val SIZE = 16
 
     private val blockTileMap = mutableMapOf<VoxelType, Pair<Int, Int>>()
 
