@@ -28,7 +28,6 @@ class WorldRenderer : StageNode() {
 
             val renderer = ChunkRenderer(chunk)
             renderer.setup()
-            renderer.shader = shader
             add(renderer)
         }
     }
@@ -54,7 +53,7 @@ class WorldRenderer : StageNode() {
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0)
         shader.setUniformi("uTexAtlas", 0)
 
-        //Render components
+        //Render children
         super.render()
 
         Debug.ifEnabled {

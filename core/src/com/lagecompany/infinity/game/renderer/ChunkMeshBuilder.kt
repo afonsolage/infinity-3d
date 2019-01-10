@@ -116,6 +116,9 @@ object ChunkMeshBuilder {
                 i += normalArr.size
 
                 //Copy texUV
+
+
+                //Copy tileUV
             }
         }
         return result

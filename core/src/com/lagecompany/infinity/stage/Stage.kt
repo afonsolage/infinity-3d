@@ -5,7 +5,6 @@ import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.utils.Disposable
-import com.lagecompany.infinity.InfinityGame
 import com.lagecompany.infinity.ShaderLoader
 import com.lagecompany.infinity.game.Debug
 import kotlin.reflect.KClass
@@ -34,7 +33,10 @@ abstract class StageObject : Disposable {
     /**
      * Initialize it self.
      */
-    open fun initialize() {}
+    open fun initialize() {
+        //By default, the children get the shader from it's parent
+        shader = parent.shader
+    }
 
     /**
      * Dispose it self.
@@ -123,13 +125,9 @@ abstract class StageNode : StageObject() {
 }
 
 abstract class Stage : StageNode() {
-    private val _children = mutableListOf<StageObject>()
-
     private val inputMultiplexer = InputMultiplexer()
 
     abstract fun getCamera(): Camera
-
-    val app get() = Gdx.app as InfinityGame
 
     override fun initialize() {
         Gdx.input.inputProcessor = inputMultiplexer
