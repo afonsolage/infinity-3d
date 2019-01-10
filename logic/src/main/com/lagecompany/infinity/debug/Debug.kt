@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
 //    runBlocking {
 //        world.generateAllChunks()
 //    }
-    simpleMeasureTest(prepare = world::allocAllChunks, dispose = world::clearAllChunks) {
+    simpleMeasureTest(dispose = world::dispose) {
         runBlocking {
             world.generateAllChunks()
         }

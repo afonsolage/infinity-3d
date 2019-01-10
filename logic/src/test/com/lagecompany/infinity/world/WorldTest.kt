@@ -61,7 +61,6 @@ internal class WorldTest {
         val world = World()
         val c = world[0]
         runBlocking {
-            world.allocAllChunks()
             world.generateChunk(c)
 
             c.types[0, 1, 0].set(VoxelType.GRASS).save() //Set this one as grass so we can use it to test

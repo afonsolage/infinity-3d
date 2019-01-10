@@ -49,6 +49,8 @@ class World : Disposable {
         if (chunk.isEmpty)
             return
 
+        chunk.visibleSides.alloc()
+
         for (x in 0 until Chunk.SIZE) {
             for (y in 0 until Chunk.SIZE) {
                 for (z in 0 until Chunk.SIZE) {
@@ -67,18 +69,6 @@ class World : Disposable {
         }
     }
 
-    fun allocAllChunks() {
-        chunks.forEach {
-            it.types.alloc()
-            it.neighborSides.alloc()
-            it.visibleSides.alloc()
-        }
-    }
-
-    fun clearAllChunks() {
-        chunks.forEach(Chunk::dispose)
-    }
-
     internal fun generateChunk(chunk: Chunk) {
         setChunkPosition(chunk)
 
@@ -86,6 +76,8 @@ class World : Disposable {
 
         val generator = NoiseGenerator.default
         generator.generate(chunk)
+
+        chunk.types.alloc()
 
         for (i in 0 until Chunk.SIZE * Chunk.SIZE) {
             val height = generator[i] * Chunk.SIZE
@@ -108,6 +100,8 @@ class World : Disposable {
     internal fun buildChunkNeighborhood(chunk: Chunk) {
         if (chunk.isEmpty)
             return
+
+        chunk.neighborSides.alloc()
 
         for (x in 0 until Chunk.SIZE) {
             for (y in 0 until Chunk.SIZE) {

@@ -5,7 +5,6 @@ import com.lagecompany.infinity.game.BlocksTextureLoader
 import com.lagecompany.infinity.stage.GameStage
 import com.lagecompany.infinity.stage.StageComponent
 import com.lagecompany.infinity.world.World
-import kotlinx.coroutines.runBlocking
 
 class WorldRenderer : StageComponent {
 
@@ -17,11 +16,7 @@ class WorldRenderer : StageComponent {
     override fun initialize() {
         atlas = BlocksTextureLoader.loadBlocksTexture()
 
-        runBlocking {
-            //TODO: Find better way to do it
-            world.allocAllChunks()
-            world.generateAllChunks()
-        }
+        world.generateAllChunks()
 
         for (i in 0 until World.SIZE) {
             val chunk = world[i]
