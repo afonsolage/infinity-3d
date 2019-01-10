@@ -6,13 +6,23 @@ import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.utils.Disposable
 import com.lagecompany.infinity.InfinityGame
+import com.lagecompany.infinity.ShaderLoader
 import com.lagecompany.infinity.game.Debug
 import kotlin.reflect.KClass
 
 /**
  * A simple object that has the ability cyclic life-time: initialize, update it's internal state, render and dispose when done.
  */
-interface StageObject : Disposable {
+abstract class StageObject : Disposable {
+    companion object {
+        val empty = object : StageObject() {}
+    }
+
+    var parent = empty
+    var shader = ShaderLoader.blankShader
+
+    val hasParent get () = parent !== empty
+
     fun <T> currentStage(): T {
         return StageManager.currentStage as T ?: throw ClassCastException()
     }
@@ -24,7 +34,7 @@ interface StageObject : Disposable {
     /**
      * Initialize it self.
      */
-    fun initialize() {}
+    open fun initialize() {}
 
     /**
      * Dispose it self.
@@ -34,26 +44,26 @@ interface StageObject : Disposable {
     /**
      * Updates it's internal state.
      */
-    fun tick(delta: Float) {}
+    open fun tick(delta: Float) {}
 
     /**
      * Renders it self.
      */
-    fun render() {}
+    open fun render() {}
 
     /**
      * Renders debug it self. This method will be called only
      * if the flag Debug.DEBUG is set to true
      */
-    fun renderDebug() {}
+    open fun renderDebug() {}
 }
 
 /**
  * A node that has the ability cyclic life-time: initialize, update it's internal state, render and dispose when done. It also
  * has children that do the same.
  */
-interface StageNode : StageObject {
-    val children: MutableCollection<StageObject>
+abstract class StageNode : StageObject() {
+    protected val children = mutableListOf<StageObject>()
 
     /**
      * Initialize it self and all it's children. If this method is overridden, it must call super.initialize() in
@@ -101,19 +111,19 @@ interface StageNode : StageObject {
     fun add(node: StageObject) {
         assert(node != this) { "Can't add your self" }
         children.add(node)
+        node.parent = this
         node.initialize()
     }
 
     fun remove(node: StageObject) {
         children.remove(node)
+        node.parent = empty
         node.dispose()
     }
 }
 
-abstract class Stage : StageNode {
+abstract class Stage : StageNode() {
     private val _children = mutableListOf<StageObject>()
-    override val children: MutableList<StageObject>
-        get() = _children
 
     private val inputMultiplexer = InputMultiplexer()
 

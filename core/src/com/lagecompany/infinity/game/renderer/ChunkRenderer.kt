@@ -12,7 +12,7 @@ import com.lagecompany.infinity.world.Chunk
 private const val DEFAULT_PRIMITIVE = GL20.GL_TRIANGLES
 private const val WIREFRAME_PRIMITIVE = GL20.GL_LINES
 
-class ChunkRenderer(private val chunk: Chunk) : StageObject {
+class ChunkRenderer(private val chunk: Chunk) : StageObject() {
 
     private var mesh = ChunkMeshBuilder.emptyMesh
 
@@ -30,7 +30,7 @@ class ChunkRenderer(private val chunk: Chunk) : StageObject {
     }
 
     override fun render() {
-        mesh.render(currentStage<GameStage>().shader, primitiveType)
+        mesh.render(shader, primitiveType)
     }
 
     override fun renderDebug() {

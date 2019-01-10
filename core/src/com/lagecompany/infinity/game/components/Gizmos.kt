@@ -9,7 +9,7 @@ import com.lagecompany.infinity.stage.StageObject
 
 private const val LENGTH = 100000f
 
-class Gizmos : StageObject {
+class Gizmos : StageObject() {
 
     private val shapeRenderer = ShapeRenderer()
 

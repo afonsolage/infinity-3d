@@ -19,10 +19,9 @@ private const val LOG_TAG = "GameStage"
 class GameStage : Stage() {
 
     val camera = PerspectiveCamera(67f, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-    val shader = ShaderProgram(Gdx.files.internal("shaders/lightingVertex.glsl"), Gdx.files.internal("shaders/lightingFragment.glsl"))
     private val cameraController = FlyCameraController(camera)
 
-    private val sunDir = Vector3(.25f, -1f, .45f).nor()
+    val sunDir = Vector3(.25f, -1f, .45f).nor()
 
     override fun initialize() {
         super.initialize()
@@ -71,24 +70,6 @@ class GameStage : Stage() {
         }
 
         cameraController.update()
-        shader.begin()
-        shader.setUniformMatrix("viewProjMatrix", camera.combined)
-
-        assert(sunDir.isUnit) { "sun direction must be normalized (sunDir.isUnit = ${sunDir.isUnit})" }
-
-        shader.setUniform4fv("sunDir", floatArrayOf(sunDir.x, sunDir.y, sunDir.z, 0.0f), 0, 4)
-        shader.setUniformf("tileSize", BlocksTextureLoader.SIZE.toFloat())
-
-        shader.setUniformi("textureMap", 0)
-
-        //Render components
-        super.render()
-
-        Debug.ifEnabled {
-            super.renderDebug()
-        }
-
-        shader.end()
     }
 
     override fun getCamera(): Camera {
