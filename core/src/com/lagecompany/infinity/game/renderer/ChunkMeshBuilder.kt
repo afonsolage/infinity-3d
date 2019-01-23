@@ -3,6 +3,7 @@ package com.lagecompany.infinity.game.renderer
 import com.badlogic.gdx.graphics.Mesh
 import com.badlogic.gdx.graphics.VertexAttribute
 import com.badlogic.gdx.graphics.VertexAttributes
+import com.lagecompany.infinity.game.BlocksTextureLoader
 import com.lagecompany.infinity.utils.Side
 import com.lagecompany.infinity.utils.addAndReturn
 import com.lagecompany.infinity.world.Chunk
@@ -96,13 +97,16 @@ object ChunkMeshBuilder {
         //add interleaved normal on vertices data.
 
         var i = 0
-        data.forEach {
+        data.forEach { sideData ->
             //Copy vertices data
-            val floats = it.floatBuffer.toFloatArray()
+            val floats = sideData.floatBuffer.toFloatArray()
 
             //Count how many vertices we have
             val vertexCount = floats.size / 3
-            val normalArr = Cube.normalArrays[it.side.ordinal]
+            val normalArr = Cube.normalArrays[sideData.side.ordinal]
+
+            //Get UV tile info for this voxel type.
+            var (tileU, tileV) = BlocksTextureLoader.getVoxelTile(sideData.type)
 
             var src = 0
             repeat(vertexCount) {
@@ -116,9 +120,11 @@ object ChunkMeshBuilder {
                 i += normalArr.size
 
                 //Copy texUV
-
+                i+= 2 //Leave room to texUV, we'll calculate it later on
 
                 //Copy tileUV
+                result[i++] = tileU.toFloat()
+                result[i++] = tileV.toFloat()
             }
         }
         return result
