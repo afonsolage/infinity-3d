@@ -18,10 +18,10 @@ vec3 ambient = vec3(0.5, 0.5, 0.5); //Ambient color;;
 
 void main()
 {
-    tiledTexUV = tileUV * tileSize;
-    tiledBaseTexUV = texUV * tileSize;
+    tiledTexUV = aTileUV * uTileSize;
+    tiledBaseTexUV = aTexUV * uTileSize;
 
-	lightingIntensity = max(dot(normal.xyz,-sunDir.xyz), 0.0) + ambient;
+	lightingIntensity = max(dot(aNormal.xyz,-uSunDir.xyz), 0.0) + ambient;
 
-	gl_Position = viewProjMatrix * vec4(position, 1.0);
+	gl_Position = uViewProjMatrix * vec4(aPosition, 1.0);
 }

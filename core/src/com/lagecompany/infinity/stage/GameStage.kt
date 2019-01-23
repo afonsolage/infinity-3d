@@ -70,6 +70,9 @@ class GameStage : Stage() {
         }
 
         cameraController.update()
+
+        super.render()
+        super.renderDebug()
     }
 
     override fun getCamera(): Camera {

@@ -94,8 +94,6 @@ object ChunkMeshBuilder {
     private fun getVertices(): FloatArray {
         val result = FloatArray(vertexCount() * attributesSize())
 
-        //add interleaved normal on vertices data.
-
         var i = 0
         data.forEach { sideData ->
             //Copy vertices data
@@ -120,13 +118,41 @@ object ChunkMeshBuilder {
                 i += normalArr.size
 
                 //Copy texUV
-                i+= 2 //Leave room to texUV, we'll calculate it later on
+                i += 2 //Leave room to texUV, we'll calculate it later on
 
                 //Copy tileUV
                 result[i++] = tileU.toFloat()
                 result[i++] = tileV.toFloat()
             }
         }
+
+        //Fill texUV data
+        val blockSideCount = vertexCount() / 4 //Each side has 4 vertices
+        val texUVOffset = 6 //After position and normal
+        val attrSize = attributesSize()
+        for (k in 0 until blockSideCount) {
+            val v1Offset = k * attrSize * 4 //Each i corresponds to 4 vertices and each vertex 3 floats
+            val v2Offset = v1Offset + attrSize
+            val v3Offset = v2Offset + attrSize
+            val v4Offset = v3Offset + attrSize
+
+            var maxU = Math.abs(result[v1Offset] - result[v2Offset]) + Math.abs(result[v1Offset + 1] - result[v2Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v2Offset + 2])
+            var maxV = Math.abs(result[v1Offset] - result[v4Offset]) + Math.abs(result[v1Offset + 1] - result[v4Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v4Offset + 2])
+
+            //v1
+            result[v1Offset + texUVOffset] = maxU
+            result[v1Offset + texUVOffset + 1] = 0f
+            //v2
+            result[v2Offset + texUVOffset] = 0f
+            result[v2Offset + texUVOffset + 1] = 0f
+            //v3
+            result[v3Offset + texUVOffset] = 0f
+            result[v3Offset + texUVOffset + 1] = maxV
+            //v4
+            result[v4Offset + texUVOffset] = maxU
+            result[v4Offset + texUVOffset + 1] = maxV
+        }
+
         return result
     }
 
