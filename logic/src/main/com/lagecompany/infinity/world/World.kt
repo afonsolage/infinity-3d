@@ -38,6 +38,8 @@ class World : Disposable {
     fun generateAllChunks() {
         chunks.forEach {
             generateChunk(it)
+        }
+        chunks.forEach {
             buildChunkNeighborhood(it)
         }
         chunks.forEach {
