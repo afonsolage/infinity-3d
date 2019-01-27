@@ -57,8 +57,6 @@ object BlocksTextureLoader {
 //        }
 
         val texture = Texture(atlas)
-        texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge)
-        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Nearest)
         return texture
     }
 

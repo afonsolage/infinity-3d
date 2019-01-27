@@ -11,6 +11,6 @@ in vec3 lightingIntensity;
 
 void main()
 {
-    vec2 uv = mod(tiledTexUV, uTileSize);
-    gl_FragColor = texture2D(uTexAtlas, tiledBaseTexUV + uv) * vec4(lightingIntensity, 1.0);
+    vec2 uv = mod(tiledBaseTexUV, uTileSize);
+    gl_FragColor = texture2D(uTexAtlas, tiledTexUV + uv) * vec4(lightingIntensity, 1.0);
 }
