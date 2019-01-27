@@ -31,10 +31,10 @@ data class SideData(val side: Side, val type: VoxelType, val floatBuffer: Mutabl
 
 object ChunkMeshBuilder {
     private val attributes = arrayOf(
-            VertexAttribute(VertexAttributes.Usage.Position, 3, "position")
-            , VertexAttribute(VertexAttributes.Usage.Normal, 3, "normal")
-            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "texUV")
-            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "tileUV")
+            VertexAttribute(VertexAttributes.Usage.Position, 3, "aPosition")
+            , VertexAttribute(VertexAttributes.Usage.Normal, 3, "aNormal")
+            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "aTexUV")
+            , VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "aTileUV")
 
     )
     val emptyMesh = Mesh(true, 0, 0, *attributes)
@@ -124,7 +124,9 @@ object ChunkMeshBuilder {
                 result[i++] = tileU.toFloat()
                 result[i++] = tileV.toFloat()
             }
+
         }
+        assert(i == result.size)
 
         //Fill texUV data
         val blockSideCount = vertexCount() / 4 //Each side has 4 vertices

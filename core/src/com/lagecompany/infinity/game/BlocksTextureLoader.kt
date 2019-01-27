@@ -15,6 +15,8 @@ object BlocksTextureLoader {
     const val SIZE = 16
 
     private val blockTileMap = mutableMapOf<VoxelType, Pair<Int, Int>>()
+    var tileSize: Float = 0f
+        private set
 
     fun getVoxelTile(type: VoxelType): Pair<Int, Int> {
         return blockTileMap[type] ?: error { "Unable to find tile mapping for voxel type $type" }
@@ -44,6 +46,8 @@ object BlocksTextureLoader {
             assert(y <= grid)
         }
 
+        tileSize = 1f / (x + 1)
+
         images.forEach {
             it.pixmap.dispose()
         }
@@ -52,7 +56,10 @@ object BlocksTextureLoader {
 //            PixmapIO.writePNG(Gdx.files.absolute("core/assets/blocks/atlas.png"), atlas)
 //        }
 
-        return Texture(atlas)
+        val texture = Texture(atlas)
+        texture.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge)
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Nearest)
+        return texture
     }
 
     private fun loadBlocksImages(): Array<BlockImage> {

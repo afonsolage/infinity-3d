@@ -1,4 +1,3 @@
-//load SP_SOURCE_BASIC_LIGHT_VERTEX_SHADER
 #version 400
 
 attribute vec3 aPosition;
@@ -8,7 +7,7 @@ attribute vec2 aTileUV;
 
 uniform vec4 uSunDir;
 uniform float uTileSize;
-uniform mat4 uViewProjMatrix;
+uniform mat4 uViewProjectionMatrix;
 
 out vec3 lightingIntensity;
 out vec2 tiledTexUV;
@@ -23,5 +22,5 @@ void main()
 
 	lightingIntensity = max(dot(aNormal.xyz,-uSunDir.xyz), 0.0) + ambient;
 
-	gl_Position = uViewProjMatrix * vec4(aPosition, 1.0);
+	gl_Position = uViewProjectionMatrix * vec4(aPosition, 1.0);
 }
