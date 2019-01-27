@@ -9,9 +9,9 @@ class World : Disposable {
     private val chunks = Array(SIZE) { Chunk(it) }
 
     companion object {
-        const val WIDTH = 5
+        const val WIDTH = 10
         const val HEIGHT = 5
-        const val DEPTH = 5
+        const val DEPTH = 10
 
         const val SIZE = WIDTH * HEIGHT * DEPTH
         const val X_SIZE = WIDTH
@@ -82,16 +82,23 @@ class World : Disposable {
         chunk.types.alloc()
 
         for (i in 0 until Chunk.SIZE * Chunk.SIZE) {
-            val height = generator[i] * Chunk.SIZE
+            var height = (generator[i] * Chunk.SIZE) + (Chunk.SIZE / 2)
 
-            if (height >= Chunk.SIZE) continue
+            val originalHeight = height.toInt()
+            if (height >= chunk.y + Chunk.SIZE)
+                height = (chunk.y + Chunk.SIZE).toFloat()
 
             if (!hasVoxel)
                 hasVoxel = true
 
             val (x, z) = NoiseGenerator.fromIndex(i)
             for (y in chunk.y until height.toInt()) {
-                chunk.types[x, y, z].set(VoxelType.GRASS).save()
+                val type = when {
+                    y < originalHeight / 2 -> VoxelType.ROCK
+                    y == originalHeight - 1 -> VoxelType.GRASS
+                    else -> VoxelType.DIRT
+                }
+                chunk.types[x, y % Chunk.SIZE, z].set(type).save()
             }
         }
 

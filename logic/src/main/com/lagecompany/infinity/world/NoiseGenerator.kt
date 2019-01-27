@@ -8,7 +8,7 @@ class NoiseGenerator(vararg noiseLayers: Layer) {
     private val layers = arrayOf(*noiseLayers)
 
     companion object {
-        val default = NoiseGenerator(Layer(0.003f, 1.0f), Layer(0.01f, 0.2f), Layer(0.03f, 0.1f))
+        val default = NoiseGenerator(Layer(0.015f, .9f))
 
         fun fromIndex(index: Int): Pair<Int, Int> {
             return Pair(index / Chunk.SIZE, index % Chunk.SIZE)
