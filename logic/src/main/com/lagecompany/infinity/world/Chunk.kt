@@ -30,7 +30,7 @@ class Chunk(val index: Int) : Disposable {
         neighborSides.free()
     }
 
-    inline fun isOnBounds(x: Int, y: Int, z: Int): Boolean {
+    fun isOnBounds(x: Int, y: Int, z: Int): Boolean {
         return x in 0 until Chunk.SIZE && y in 0 until Chunk.SIZE && z in 0 until Chunk.SIZE
     }
 

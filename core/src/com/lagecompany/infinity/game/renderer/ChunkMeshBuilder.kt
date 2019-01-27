@@ -8,6 +8,7 @@ import com.lagecompany.infinity.utils.Side
 import com.lagecompany.infinity.utils.addAndReturn
 import com.lagecompany.infinity.world.Chunk
 import com.lagecompany.infinity.world.VoxelType
+import com.lagecompany.infinity.world.buffer.VoxelSideBuffer
 
 data class SideData(val side: Side, val type: VoxelType, val floatBuffer: MutableList<Float> = mutableListOf()) {
     override fun equals(other: Any?): Boolean {
@@ -65,13 +66,13 @@ object ChunkMeshBuilder {
     fun generate(chunk: Chunk): Mesh {
         clear()
 
-        //TODO: Create faces merge method
+//        mergeFaces(chunk)
         addAll(chunk)
 
-        return buildMesh(chunk)
+        return buildMesh()
     }
 
-    private fun buildMesh(chunk: Chunk): Mesh {
+    private fun buildMesh(): Mesh {
         val indices = getIndicesList()
         val vertices = getVertices()
 
@@ -104,7 +105,7 @@ object ChunkMeshBuilder {
             val normalArr = Cube.normalArrays[sideData.side.ordinal]
 
             //Get UV tile info for this voxel type.
-            var (tileU, tileV) = BlocksTextureLoader.getVoxelTile(sideData.type)
+            val (tileU, tileV) = BlocksTextureLoader.getVoxelTile(sideData.type)
 
             var src = 0
             repeat(vertexCount) {
@@ -138,8 +139,8 @@ object ChunkMeshBuilder {
             val v3Offset = v2Offset + attrSize
             val v4Offset = v3Offset + attrSize
 
-            var maxU = Math.abs(result[v1Offset] - result[v2Offset]) + Math.abs(result[v1Offset + 1] - result[v2Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v2Offset + 2])
-            var maxV = Math.abs(result[v1Offset] - result[v4Offset]) + Math.abs(result[v1Offset + 1] - result[v4Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v4Offset + 2])
+            val maxU = Math.abs(result[v1Offset] - result[v2Offset]) + Math.abs(result[v1Offset + 1] - result[v2Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v2Offset + 2])
+            val maxV = Math.abs(result[v1Offset] - result[v4Offset]) + Math.abs(result[v1Offset + 1] - result[v4Offset + 1]) + Math.abs(result[v1Offset + 2] - result[v4Offset + 2])
 
             //v1
             result[v1Offset + texUVOffset] = maxU
@@ -188,6 +189,102 @@ object ChunkMeshBuilder {
          */
         return ShortArray(size) { (it / 6 * 4 + indexAdd[it % 6]).toShort() }
     }
+//
+//    private fun mergeFaces(chunk: Chunk) {
+//        val mfBuffer = VoxelSideBuffer()
+//        mfBuffer.alloc()
+//
+//        val side = Side.FRONT
+//        val vertices = FloatArray(12)
+//
+//        for (z in 0 until Chunk.SIZE) {
+//            for (y in 0 until Chunk.SIZE) {
+//                for (x in 0 until Chunk.SIZE) {
+//                    val currentType = chunk.types[x, y, z].get()
+//
+//                    if (currentType == VoxelType.NONE
+//                            || mfBuffer[x, y, z][side]
+//                            || !chunk.visibleSides[x, y, z][side])
+//                        continue
+//
+//                    /*
+//                     *
+//                     *      v7 +-------+ v6	y
+//                     *      / |      / |	|
+//                     *   v3 +-------+v2|	|
+//                     *      |v4+-------+ v5	+-- X
+//                     *      | /     | /		 \
+//                     *      +-------+		  Z
+//                     *     v0        v1
+//                     */
+//                    // The front face is composed of v0, v1, v2 and v3.
+//                    System.arraycopy(Cube.v0(chunk.x + x, chunk.y + y, chunk.z + z), 0, vertices, 0, 3)
+//
+//                    /*
+//					 *	Following the counter-clockwise rendering order.
+//					 *
+//					 *	    |
+//					 *	    +
+//					 *	    |		    --->
+//					 *	    +---+---
+//					 *	  v0
+//					 */
+//                    var nx = x
+//                    while (nx + 1 < Chunk.SIZE
+//                            && nextVoxelIsEquals(chunk, nx + 1, y, z, side, currentType, mfBuffer)) {
+//                        nx++
+//                    }
+//
+//                    /*
+//                     *
+//                     *	    |		|
+//                     *	    +	    +
+//                     *	    |		|
+//                     *	    +---+---+
+//                     *	  v0		 v1
+//                     *
+//                     *	At this moment, we reached the right most X, so set it as v1.
+//                     */
+//                    System.arraycopy(Cube.v1(chunk.x + nx, chunk.y + y, chunk.z + z), 0, vertices, 3, 3)
+//
+//                    // Now lets find the top most vertex
+//                    var ny = y
+//                    while (ny + 1 < Chunk.SIZE
+//                            && nextVoxelIsEquals(chunk, nx, ny + 1, z, side, currentType, mfBuffer)) {
+//                        ny++
+//                    }
+//
+//                    /*	  v3		 v2
+//                     *	    +---+---+
+//                     *	    |		|
+//                     *	    +	    +
+//                     *	    |		|
+//                     *	    +---+---+
+//                     *	  v0		 v1
+//                     *
+//                     *	At this moment, we reached the right most and top most, so lets track v2 and v3.
+//                     */
+//                    System.arraycopy(Cube.v2(chunk.x + nx, chunk.y + ny, chunk.z + z), 0, vertices, 6, 3)
+//                    System.arraycopy(Cube.v3(chunk.x + x, chunk.y + ny, chunk.z + z), 0, vertices, 9, 3)
+//
+//                    for (x1 in x until nx) {
+//                        for (y1 in y until ny) {
+//                            mfBuffer[x1, y1, z].set(side, true).save()
+//                        }
+//                    }
+//
+//                    add(side, currentType, *vertices)
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun nextVoxelIsEquals(chunk: Chunk, x: Int, y: Int, z: Int, side: Side, type: VoxelType, mfBuffer: VoxelSideBuffer): Boolean {
+//        return chunk.isOnBounds(x, y, z)
+//                && chunk.types[x, y, z].get() == type
+//                && chunk.visibleSides[x, y, z][side]
+//                && !mfBuffer[x, y, z][side]
+//    }
 
     private fun addAll(chunk: Chunk) {
         for (x in 0 until Chunk.SIZE) {

@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector3
  */
 
 object Cube {
+    private val floatCache = ThreadLocal.withInitial { FloatArray(3)}
+
     val frontIdxs = shortArrayOf(0, 1, 2, 2, 3, 0)
     val rightIdxs = shortArrayOf(1, 5, 6, 6, 2, 1)
     val backIdxs = shortArrayOf(5, 4, 7, 7, 6, 5)
@@ -31,6 +33,70 @@ object Cube {
     val downNormal = floatArrayOf(0f, -1f, 0f)
 
     val normalArrays = arrayOf(frontNormal, rightNormal, backNormal, leftNormal, upNormal, downNormal)
+//
+//    fun v0(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 0f
+//        cache[1] = y + 0f
+//        cache[2] = z + 1f
+//        return cache
+//    }
+//
+//    fun v1(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 1f
+//        cache[1] = y + 0f
+//        cache[2] = z + 1f
+//        return cache
+//    }
+//
+//    fun v2(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 1f
+//        cache[1] = y + 1f
+//        cache[2] = z + 1f
+//        return cache
+//    }
+//
+//    fun v3(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 0f
+//        cache[1] = y + 1f
+//        cache[2] = z + 1f
+//        return cache
+//    }
+//
+//    fun v4(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 0f
+//        cache[1] = y + 0f
+//        cache[2] = z + 0f
+//        return cache
+//    }
+//
+//    fun v5(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 1f
+//        cache[1] = y + 0f
+//        cache[2] = z + 0f
+//        return cache
+//    }
+//
+//    fun v6(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 1f
+//        cache[1] = y + 1f
+//        cache[2] = z + 0f
+//        return cache
+//    }
+//
+//    fun v7(x: Int, y: Int, z: Int): FloatArray {
+//        val cache = floatCache.get()
+//        cache[0] = x + 0f
+//        cache[1] = y + 1f
+//        cache[2] = z + 0f
+//        return cache
+//    }
 
     private val v0 = Vector3(0f, 0f, 1f)
     private val v1 = Vector3(1f, 0f, 1f)

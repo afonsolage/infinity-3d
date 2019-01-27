@@ -44,7 +44,7 @@ class WorldRenderer : StageNode() {
 
         val sunDir = gameStage.sunDir
         assert(sunDir.isUnit) { "sun direction must be normalized (sunDir.isUnit = ${sunDir.isUnit})" }
-        
+
         shader.begin()
         shader.setUniformMatrix("uViewProjectionMatrix", gameStage.camera.combined)
         shader.setUniform4fv("uSunDir", floatArrayOf(sunDir.x, sunDir.y, sunDir.z, 0.0f), 0, 4)
